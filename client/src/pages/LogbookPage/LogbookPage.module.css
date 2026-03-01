@@ -2,55 +2,134 @@
   margin-bottom: 1rem;
 }
 
-.tableWrapper {
-  overflow-x: auto;
-}
+/* ── Card wrapper ─────────────────────────────────────────────────────────── */
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  white-space: nowrap;
-}
-
-th, td {
-  padding: 0.45rem 0.6rem;
-  text-align: left;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-th {
-  background: #f7f7f7;
-  font-weight: 600;
-  user-select: none;
-}
-
-th.sortable {
-  cursor: pointer;
-}
-
-th.sortable:hover {
-  background: #eee;
-}
-
-.sortIcon {
-  margin-left: 0.3rem;
-  font-size: 0.75rem;
-}
-
-tr:hover td {
-  background: #fafafa;
-}
-
-td.num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.dim {
-  color: #999;
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 1rem;
 }
 
 .stale {
   opacity: 0.6;
+}
+
+/* ── Grid layout ──────────────────────────────────────────────────────────── */
+
+.gridWrapper {
+  overflow-x: auto;
+             /* date bo bo tail   model  from   to     total  pic    sic    dual   night  xc     imc    appr   ldg    del */
+  --grid-cols: 90px 65px 65px 80px 55px 58px 58px 50px 50px 50px 50px 50px 50px 50px 36px 40px 40px;
+}
+
+.headerRow,
+.dataRow {
+  display: grid;
+      /* grid-auto-flow: column; */
+  grid-template-columns: var(--grid-cols);
+  min-width: max-content;
+}
+
+/* ── Header ───────────────────────────────────────────────────────────────── */
+
+.headerRow {
+  background: #f7f7f7;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.headerCell {
+  padding: 0.5rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #777;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.headerCell:hover {
+  color: #1a5276;
+}
+
+.sortIcon {
+  margin-left: 0.25rem;
+  font-size: 0.6rem;
+}
+
+/* ── Data rows ────────────────────────────────────────────────────────────── */
+
+.dataRow {
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.1s;
+  font-family: jetbrains mono, monospace;
+}
+
+.dataRow:last-child {
+  border-bottom: none;
+}
+
+.dataRow:hover {
+  background: #f5f9ff;
+}
+
+.cell {
+  padding: 0.45rem 0.6rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  color: #333;
+  display: flex;
+  align-items: center;
+}
+
+.num {
+  justify-content: flex-end;
+  font-variant-numeric: tabular-nums;
+  color: #444;
+}
+
+.delCell {
+  justify-content: center;
+}
+
+/* ── Delete button ────────────────────────────────────────────────────────── */
+
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  /* padding: 20px; */
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #ccc;
+  cursor: pointer;
+  opacity: 0;
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+  /* visibility:; */
+  
+}
+
+.deleteBtn:hover {
+  
+
+  color: #c0392b;
+  border-color: #f5b7b1;
+  background: #fdf2f2;
+  opacity: 1;
+  /* visibility: visible; */
+}
+
+/* ── Empty state ──────────────────────────────────────────────────────────── */
+
+.emptyRow {
+  padding: 2.5rem;
+  text-align: center;
+  color: #999;
+  font-size: 0.875rem;
 }
