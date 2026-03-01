@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(ls D:\\\\Dev\\\\logbook\\\\MyFlightbookWeb:*)",
-      "Bash(dotnet:*)"
-    ]
-  }
-}

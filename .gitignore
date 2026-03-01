@@ -10,6 +10,7 @@ MyFlightbook.Api/appsettings.Development.json
 # React client — Firebase config values
 client/.env
 client/.env.local
+.claude/
 
 # User-specific files
 *.rsuser
