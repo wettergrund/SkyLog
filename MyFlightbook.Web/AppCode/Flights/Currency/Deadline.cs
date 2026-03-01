@@ -320,13 +320,13 @@ namespace MyFlightbook.Currency
         public static IEnumerable<DeadlineCurrency> DeadlinesForUser(string szUser, int idAircraft = Aircraft.idAircraftUnknown, bool fIncludeSharedDeadlines = false)
         {
             string szWhere = string.Empty;
-            const string szQBase = @"SELECT 
-	d.*, 
-    ac.tailnumber,
+            const string szQBase = @"SELECT
+	d.*,
+    ANY_VALUE(ac.tailnumber) AS tailnumber,
 	COALESCE(MAX(f.hobbsEnd), 0) AS maxHobbs,
 	COALESCE(MAX(fp.decValue), 0) AS maxTach
-FROM deadlines d 
-LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft 
+FROM deadlines d
+LEFT JOIN aircraft ac ON d.aircraftID = ac.idaircraft
 LEFT JOIN flights f on (f.username=?user and f.idaircraft=d.aircraftid)
 LEFT JOIN flightproperties fp on (fp.idproptype=96 and fp.idflight=f.idflight)
 WHERE {0}
@@ -371,9 +371,9 @@ GROUP BY d.iddeadlines";
         /// <returns>A list (enumerable) of matching deadline currencies.</returns>
         public static IEnumerable<DeadlineCurrency> SharedAircraftDeadlinesForUser(string szUser)
         {
-            string szQ = @"SELECT 
-	d.*, 
-    ac.tailnumber,
+            string szQ = @"SELECT
+	d.*,
+    ANY_VALUE(ac.tailnumber) AS tailnumber,
 	COALESCE(MAX(f.hobbsEnd), 0) AS maxHobbs,
 	COALESCE(MAX(fp.decValue), 0) AS maxTach
 FROM

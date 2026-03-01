@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- Change to net9.0 after installing the .NET 9 SDK -->
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>MyFlightbook.Api</RootNamespace>
+    <AssemblyName>MyFlightbook.Api</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Firebase Admin SDK (token revocation, push, server-side user management) -->
+    <PackageReference Include="FirebaseAdmin" Version="3.*" />
+
+    <!-- JWT Bearer — validates Firebase ID tokens via Google's OIDC endpoint -->
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.*" />
+
+    <!-- EF Core + SQL Server provider (LocalDB for dev, full SQL Server for prod) -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.*" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.*">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+
+    <!-- Swagger / OpenAPI -->
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
+  </ItemGroup>
+
+</Project>

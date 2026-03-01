@@ -1068,15 +1068,15 @@ FROM
     GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title) SEPARATOR ' ') AS CustomProperties,
     flights.totalFlightTime AS TotalTime,
     flights.dualReceived AS InstructionReceived,
-    IF (fpSolo.decValue IS NULL, 0, fpSolo.decValue) AS SoloTime,
+    IF (ANY_VALUE(fpSolo.decValue) IS NULL, 0, ANY_VALUE(fpSolo.decValue)) AS SoloTime,
     flights.pic AS PIC,
     flights.cficomment,
     flights.cfiname,
-    useraircraft.privatenotes AS AircraftPrivateNotes,
+    ANY_VALUE(useraircraft.privatenotes) AS AircraftPrivateNotes,
     IF (flights.sic IS NULL, 0, flights.sic) AS SIC,
     flights.crosscountry AS XC,
     LEAST(flights.crosscountry, flights.dualReceived) AS XCDual,
-    LEAST(flights.crosscountry, IF(fpSolo.decValue IS null, 0, fpSolo.decValue)) AS XCSolo,
+    LEAST(flights.crosscountry, IF(ANY_VALUE(fpSolo.decValue) IS null, 0, ANY_VALUE(fpSolo.decValue))) AS XCSolo,
     LEAST(flights.crosscountry, flights.PIC) AS XCPIC,
     LEAST(flights.crosscountry, IF(flights.SIC IS NULL, 0, flights.SIC)) AS XCSIC,
     imc + simulatedInstrument AS IMC, 
@@ -1085,16 +1085,16 @@ FROM
     flights.cNightLandings AS NightLandings,
     models.*,
     IF(models.family is null OR models.family='', models.model, models.family) AS FamilyDisplay,
-    IF (fpNightTakeoff.intValue IS NULL, 0, fpNightTakeoff.intValue) AS NightTakeoffs,
+    IF (ANY_VALUE(fpNightTakeoff.intValue) IS NULL, 0, ANY_VALUE(fpNightTakeoff.intValue)) AS NightTakeoffs,
     LEAST(flights.night, flights.PIC) AS NightPIC,
     LEAST(flights.night, IF(flights.SIC IS NULL, 0, flights.SIC)) AS NightSIC,
     IF (flights.PIC > 0, flights.cNightLandings, 0) AS NightPICLandings, 
     IF (flights.SIC > 0, flights.cNightLandings, 0) AS NightSICLandings,
-    IF (flights.PIC > 0 AND fpNightTakeoff.intValue IS NOT NULL, fpNightTakeoff.intValue, 0) AS NightPICTakeoffs,
-    IF (flights.SIC > 0 AND fpNightTakeoff.intValue IS NOT NULL, fpNightTakeoff.intValue, 0) AS NightSICTakeoffs,
-    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpAeroTow.intValue IS NOT NULL, fpAeroTow.intValue, 0) AS AeroTows,
-    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpWinchedLaunch.intValue IS NOT NULL, fpWinchedLaunch.intValue, 0) AS WinchedLaunches,
-    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND fpSelfLaunch.intValue IS NOT NULL, fpSelfLaunch.intValue, 0) AS SelfLaunches,
+    IF (flights.PIC > 0 AND ANY_VALUE(fpNightTakeoff.intValue) IS NOT NULL, ANY_VALUE(fpNightTakeoff.intValue), 0) AS NightPICTakeoffs,
+    IF (flights.SIC > 0 AND ANY_VALUE(fpNightTakeoff.intValue) IS NOT NULL, ANY_VALUE(fpNightTakeoff.intValue), 0) AS NightSICTakeoffs,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND ANY_VALUE(fpAeroTow.intValue) IS NOT NULL, ANY_VALUE(fpAeroTow.intValue), 0) AS AeroTows,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND ANY_VALUE(fpWinchedLaunch.intValue) IS NOT NULL, ANY_VALUE(fpWinchedLaunch.intValue), 0) AS WinchedLaunches,
+    IF(categoryclass.idcatclass IN (5, 10, 11, 12) AND ANY_VALUE(fpSelfLaunch.intValue) IS NOT NULL, ANY_VALUE(fpSelfLaunch.intValue), 0) AS SelfLaunches,
     IF(categoryclass.idcatclass IN (5, 10, 11, 12), flights.cLandings, 1) AS flightCount
   FROM flights
   INNER JOIN aircraft ON flights.idaircraft=aircraft.idaircraft
@@ -1112,7 +1112,7 @@ FROM
   LEFT JOIN FlightProperties fdc ON flights.idFlight=fdc.idFlight
   LEFT JOIN custompropertytypes cpt ON fdc.idPropType=cpt.idPropType
   WHERE {0}
-  GROUP BY flights.idFlight, models.idmodel
+  GROUP BY flights.idFlight, models.idmodel, categoryclass.idcatclass, ait.ID, manufacturers.idManufacturer, aircraft.idaircraft
   {1}) f
 GROUP BY {2}
 ORDER BY f.InstanceTypeID, f.CatClassID;";
@@ -1551,12 +1551,12 @@ FROM (SELECT
             CONCAT('(', models.model, ')'),
             aircraft.tailnumber) AS 'TailNumberDisplay',
         aircraft.TailNumber AS RawTailNumber,
-        useraircraft.privatenotes AS AircraftPrivateNotes,
+        ANY_VALUE(useraircraft.privatenotes) AS AircraftPrivateNotes,
         GROUP_CONCAT(DISTINCT CONCAT(fdc.StringValue, ' ', cpt.Title)
             SEPARATOR ' ') AS CustomProperties,
         models.*,
-        fpEng.decValue AS EngineerTime,
-        fpMil.decValue AS MilitaryTime
+        ANY_VALUE(fpEng.decValue) AS EngineerTime,
+        ANY_VALUE(fpMil.decValue) AS MilitaryTime
     FROM
         flights
             INNER JOIN aircraft ON flights.idaircraft = aircraft.idaircraft
@@ -1572,7 +1572,7 @@ FROM (SELECT
             LEFT JOIN custompropertytypes cpt ON fdc.idPropType = cpt.idPropType
       WHERE
         {0}
-    GROUP BY flights.idFlight , models.idmodel {1}
+    GROUP BY flights.idFlight , models.idmodel, categoryclass.idcatclass, ait.ID, manufacturers.idManufacturer, aircraft.idaircraft {1}
     ORDER BY familyDisplay asc) f
 GROUP BY f.familyDisplay WITH ROLLUP";
 

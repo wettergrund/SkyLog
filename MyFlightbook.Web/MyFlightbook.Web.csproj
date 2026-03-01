@@ -1908,6 +1908,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>WebService.resx</DependentUpon>
     </Compile>
+    <Compile Include="Areas\api\ApiAreaRegistration.cs" />
+    <Compile Include="Areas\api\Controllers\AircraftApiController.cs" />
+    <Compile Include="Areas\api\Controllers\ApiControllerBase.cs" />
+    <Compile Include="Areas\api\Controllers\AuthApiController.cs" />
+    <Compile Include="Areas\api\Controllers\CurrencyApiController.cs" />
+    <Compile Include="Areas\api\Controllers\FlightsApiController.cs" />
+    <Compile Include="Areas\api\Controllers\TotalsApiController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminAircraftController.cs" />
     <Compile Include="Areas\mvc\Controllers\AdminController.cs" />
     <Compile Include="Areas\mvc\Controllers\AircraftControllerBase.cs" />

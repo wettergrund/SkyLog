@@ -208,9 +208,9 @@ GROUP BY {0}
 ORDER BY catclasstype ASC, Capabilities ASC, ModelSignature DESC
     ";
 
-        private static readonly string sqlAircraftModels = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "m.idmodel");
-        private static readonly string sqlAircraftCatClassCapabilities = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "ModelSignature");
-        private static readonly string sqlAircraftCatClassType = String.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM ({0}) types GROUP BY types.catclasstype", sqlAircraftCatClassCapabilities);
+        private static readonly string sqlAircraftModels = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "m.idmodel, cc.idCatClass");
+        private static readonly string sqlAircraftCatClassCapabilities = String.Format(System.Globalization.CultureInfo.InvariantCulture, sqlRepresentativeTypesBase, "ModelSignature, m.idmodel, cc.idCatClass");
+        private static readonly string sqlAircraftCatClassType = String.Format(System.Globalization.CultureInfo.InvariantCulture, "SELECT * FROM (SELECT *, ROW_NUMBER() OVER (PARTITION BY catclasstype ORDER BY AircraftIDs) AS rn FROM ({0}) types) ranked WHERE ranked.rn = 1", sqlAircraftCatClassCapabilities);
         #endregion
 
         #region Properties

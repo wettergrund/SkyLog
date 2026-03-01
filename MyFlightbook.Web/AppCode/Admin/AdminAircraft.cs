@@ -170,7 +170,7 @@ WHERE ac.tailnormal IN
          FROM Aircraft ac
          GROUP BY TailMatch
          HAVING cAircraft > 1) AS Dupes)
-GROUP BY ac.idaircraft
+GROUP BY ac.idaircraft, models.idmodel
 ORDER BY tailnormal ASC, version, numUsers DESC, idaircraft ASC");
 
             dbh.ReadRows((comm) => { },
@@ -206,8 +206,8 @@ FROM aircraft
 	INNER JOIN Aircraft ac2 on aircraft.idmodel = ac2.idmodel AND aircraft.instancetype=ac2.instancetype AND aircraft.idaircraft <> ac2.idaircraft
 	LEFT JOIN flights f on f.idaircraft = aircraft.idaircraft
 	LEFT JOIN useraircraft ua ON ua.idaircraft=aircraft.idaircraft
-WHERE aircraft.instancetype <> 1 AND ac2.instancetype <> 1 
-GROUP BY aircraft.idaircraft
+WHERE aircraft.instancetype <> 1 AND ac2.instancetype <> 1
+GROUP BY aircraft.idaircraft, models.idmodel
 ORDER BY aircraft.instancetype, aircraft.idmodel");
 
             dbh.ReadRows((comm) => { },
@@ -305,7 +305,7 @@ WHERE
     OR (LEFT(aircraft.tailnumber, 3) <> 'SIM' AND (LEFT(aircraft.tailnormal, 4) = LEFT(manufacturers.manufacturer, 4)))
     OR (aircraft.instancetype=1 AND aircraft.tailnormal RLIKE 'SIM|FTD|ATD|FFS|REDB|FSTD|ANON|FRAS|ELIT|CAE|ALSIM|FLIG|SAFE|PREC|TRUF|FMX|GROU|VARI|MISC|NONE|UNKN|OTHE|FAA|MENTO|TAIL'))
     AND aircraft.publicnotes NOT LIKE '% '
-GROUP BY aircraft.idaircraft
+GROUP BY aircraft.idaircraft, models.idmodel
 ORDER BY tailnumber ASC");
 
             List<Aircraft> lstAc = new List<Aircraft>();

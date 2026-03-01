@@ -1,0 +1,186 @@
+
+.page {
+  max-width: 860px;
+}
+
+.page h2 {
+  margin-bottom: 1.25rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+/* ── Field layout ─────────────────────────────────────────────────────────── */
+
+.fieldRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+}
+
+.field,
+:global(.field) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 120px;
+}
+
+.fieldWide {
+  flex: 1 1 200px;
+}
+
+.field label,
+:global(.field) label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.field input,
+.field select,
+.field textarea,
+:global(.field) input,
+:global(.field) select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus,
+:global(.field) input:focus,
+:global(.field) select:focus {
+  border-color: #1a5276;
+}
+
+.field textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* ── Time grid ────────────────────────────────────────────────────────────── */
+
+.timeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 0.75rem;
+}
+
+.timeGrid :global(.field) input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Inline aircraft sub-form ─────────────────────────────────────────────── */
+
+.subForm {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  border-radius: 4px;
+}
+
+.subFormTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  color: #444;
+}
+
+.addAircraftBtn {
+  margin-top: 0.75rem;
+  padding: 0.45rem 1rem;
+  background: #1a5276;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.addAircraftBtn:hover {
+  background: #154360;
+}
+
+.addAircraftBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── Checkboxes ───────────────────────────────────────────────────────────── */
+
+.checkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin: 0.75rem 0;
+}
+
+.checkLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+/* ── Actions ──────────────────────────────────────────────────────────────── */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.cancelBtn {
+  padding: 0.55rem 1.25rem;
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: #555;
+}
+
+.cancelBtn:hover {
+  background: #f5f5f5;
+}
+
+.submitBtn {
+  padding: 0.55rem 1.5rem;
+  background: #1a5276;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background: #154360;
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

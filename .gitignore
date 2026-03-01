@@ -3,6 +3,14 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# MyFlightbook.Api — secrets that must never be committed
+MyFlightbook.Api/firebase-service-account.json
+MyFlightbook.Api/appsettings.Development.json
+
+# React client — Firebase config values
+client/.env
+client/.env.local
+
 # User-specific files
 *.rsuser
 *.suo

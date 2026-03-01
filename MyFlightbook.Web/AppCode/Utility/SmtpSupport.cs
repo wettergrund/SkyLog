@@ -20,7 +20,7 @@ namespace MyFlightbook.Injection
 
             using (SmtpClient smtpClient = new SmtpClient())
             {
-                if (!smtpClient.Host.Contains("local"))
+                if (!string.IsNullOrEmpty(smtpClient.Host) && !smtpClient.Host.Contains("local"))
                     smtpClient.EnableSsl = true;
                 System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
 

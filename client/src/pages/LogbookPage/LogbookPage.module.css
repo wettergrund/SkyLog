@@ -1,0 +1,56 @@
+.page h2 {
+  margin-bottom: 1rem;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+th, td {
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+  background: #f7f7f7;
+  font-weight: 600;
+  user-select: none;
+}
+
+th.sortable {
+  cursor: pointer;
+}
+
+th.sortable:hover {
+  background: #eee;
+}
+
+.sortIcon {
+  margin-left: 0.3rem;
+  font-size: 0.75rem;
+}
+
+tr:hover td {
+  background: #fafafa;
+}
+
+td.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.dim {
+  color: #999;
+}
+
+.stale {
+  opacity: 0.6;
+}

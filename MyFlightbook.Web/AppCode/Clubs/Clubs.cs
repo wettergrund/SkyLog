@@ -625,11 +625,11 @@ namespace MyFlightbook.Clubs
             LastError = dbh.LastError;
         }
 
-        private const string szSQLGetClubsBase = @"SELECT *, 0 AS dist, '' AS FriendlyName 
-        FROM clubs c 
+        private const string szSQLGetClubsBase = @"SELECT c.*, ANY_VALUE(ap.AirportID) AS AirportID, ANY_VALUE(ap.FacilityName) AS FacilityName, ANY_VALUE(ap.Type) AS Type, ANY_VALUE(ap.SourceUserName) AS SourceUserName, ANY_VALUE(ap.Latitude) AS Latitude, ANY_VALUE(ap.Longitude) AS Longitude, ANY_VALUE(ap.Preferred) AS Preferred, ANY_VALUE(ap.country) AS country, ANY_VALUE(ap.admin1) AS admin1, 0 AS dist, '' AS FriendlyName
+        FROM clubs c
             LEFT JOIN airports ap ON (c.clubHomeAirport=ap.AirportID OR (LENGTH(c.clubHomeAirport)=4 AND c.clubHomeAirport= CONCAT('K', ap.airportID))) AND ap.Type IN ('A', 'H', 'S')
             {0}
-        GROUP BY c.idclub, c.clubHomeAirport";
+        GROUP BY c.idclub";
 
         private static string PrivateInactiveRestriction()
         {
@@ -711,7 +711,7 @@ namespace MyFlightbook.Clubs
         public static IEnumerable<Club> AllClubsForUser(string szUser)
         {
             List<Club> lst = new List<Club>();
-            DBHelper dbh = new DBHelper("SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName FROM clubs c LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') LEFT JOIN clubmembers cm ON cm.idclub=c.idclub WHERE (cm.username IS NULL AND c.creator=?user) OR cm.username=?user GROUP BY c.idclub");
+            DBHelper dbh = new DBHelper("SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName FROM clubs c LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') WHERE c.creator=?user OR EXISTS (SELECT 1 FROM clubmembers cm WHERE cm.idclub=c.idclub AND cm.username=?user)");
             dbh.ReadRows((comm) => { comm.Parameters.AddWithValue("user", szUser); }, (dr) => { lst.Add(new Club(dr)); });
             return lst;
         }
@@ -729,13 +729,12 @@ namespace MyFlightbook.Clubs
         public static IEnumerable<Club> ClubsForAircraft(int idaircraft, string szUser = null)
         {
             List<Club> lst = new List<Club>();
-            string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT c.*, ap.*, 0 AS dist, '' AS FriendlyName 
-                FROM clubaircraft ca 
-                INNER JOIN clubs c ON ca.idclub=c.idclub 
-                {0}
-                LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') 
-                WHERE ca.idaircraft=?idaircraft {1}
-                GROUP BY c.idclub", szUser == null ? string.Empty : "INNER JOIN clubmembers cm ON ca.idclub=cm.idclub", szUser == null ? string.Empty : "AND cm.username=?user");
+            string szQ = String.Format(CultureInfo.InvariantCulture, @"SELECT c.*, ANY_VALUE(ap.AirportID) AS AirportID, ANY_VALUE(ap.FacilityName) AS FacilityName, ANY_VALUE(ap.Type) AS Type, ANY_VALUE(ap.SourceUserName) AS SourceUserName, ANY_VALUE(ap.Latitude) AS Latitude, ANY_VALUE(ap.Longitude) AS Longitude, ANY_VALUE(ap.Preferred) AS Preferred, ANY_VALUE(ap.country) AS country, ANY_VALUE(ap.admin1) AS admin1, 0 AS dist, '' AS FriendlyName
+                FROM clubaircraft ca
+                INNER JOIN clubs c ON ca.idclub=c.idclub
+                LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S')
+                WHERE ca.idaircraft=?idaircraft {0}
+                GROUP BY c.idclub", szUser == null ? string.Empty : "AND EXISTS (SELECT 1 FROM clubmembers cm WHERE cm.idclub=c.idclub AND cm.username=?user)");
             DBHelper dbh = new DBHelper(szQ);
             dbh.ReadRows((comm) => {
                 comm.Parameters.AddWithValue("idaircraft", idaircraft);
@@ -753,9 +752,9 @@ namespace MyFlightbook.Clubs
         public static IEnumerable<Club> ClubsNearAirport(string szCode, bool fIncludePrivateAndInactive)
         {
             List<Club> lst = new List<Club>();
-            string szQTemplate = @"SELECT c.*, ap.*, (3440.06479*acos(cos(radians(ap.latitude))*cos(radians(ap2.latitude))*cos(radians(ap.longitude)-radians(ap2.longitude))+sin(radians(ap.latitude))*sin(radians(ap2.latitude)))) AS dist, '' AS FriendlyName 
+            string szQTemplate = @"SELECT c.*, ANY_VALUE(ap.AirportID) AS AirportID, ANY_VALUE(ap.FacilityName) AS FacilityName, ANY_VALUE(ap.Type) AS Type, ANY_VALUE(ap.SourceUserName) AS SourceUserName, ANY_VALUE(ap.Latitude) AS Latitude, ANY_VALUE(ap.Longitude) AS Longitude, ANY_VALUE(ap.Preferred) AS Preferred, ANY_VALUE(ap.country) AS country, ANY_VALUE(ap.admin1) AS admin1, (3440.06479*acos(cos(radians(ANY_VALUE(ap.latitude)))*cos(radians(ANY_VALUE(ap2.latitude)))*cos(radians(ANY_VALUE(ap.longitude))-radians(ANY_VALUE(ap2.longitude)))+sin(radians(ANY_VALUE(ap.latitude)))*sin(radians(ANY_VALUE(ap2.latitude))))) AS dist, '' AS FriendlyName
                 FROM clubs c
-                LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S') 
+                LEFT JOIN airports ap ON c.clubHomeAirport=ap.AirportID AND ap.Type IN ('A', 'H', 'S')
                 LEFT JOIN airports ap2 ON ABS(ap2.latitude - ap.latitude) <= 2 AND ABS(ap2.longitude - ap.longitude) <= 2
                 WHERE ap2.airportid=?code AND ap2.type IN ('A', 'H', 'S') {0}
                 GROUP BY c.idclub

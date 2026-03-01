@@ -1804,7 +1804,7 @@ namespace MyFlightbook
     ft.telemetrytype,
     ft.metadata,
     fp2.DateValue AS blockOut,
-	IF (fv.idFlightVideos IS NULL, CONVERT(null using utf8mb4), CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_OBJECT('ID', fv.idFlightVideos, 'FlightID', fv.idFlight, 'VideoReference', fv.vidRef, 'Comment', fv.comment)), ']') AS JSON)) AS FlightVids,
+	IF (MIN(fv.idFlightVideos) IS NULL, CONVERT(null using utf8mb4), CAST(CONCAT('[', GROUP_CONCAT(DISTINCT JSON_OBJECT('ID', fv.idFlightVideos, 'FlightID', fv.idFlight, 'VideoReference', fv.vidRef, 'Comment', fv.comment)), ']') AS JSON)) AS FlightVids,
 	IF (fdc.idprop IS NULL, CONVERT(null using utf8mb4), JSON_ARRAYAGG(JSON_OBJECT('PropID', fdc.idprop, 'PropTypeID', fdc.idPropType, 'ValueString', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, IF(fdc.IntValue<>0, 'true', 'false'), fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)))) AS CustomPropsJSON,
     GROUP_CONCAT(DISTINCT REPLACE(cpt.FormatString, '{{0}}', ELT(cpt.type + 1, fdc.IntValue, fdc.DecValue, '', fdc.DateValue, fdc.DateValue, fdc.StringValue, fdc.DecValue)) SEPARATOR ' ') AS CustomProperties,
     models.*,

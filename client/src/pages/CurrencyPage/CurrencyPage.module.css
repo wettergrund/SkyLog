@@ -1,0 +1,32 @@
+.page h2 {
+  margin-bottom: 1rem;
+}
+
+table {
+  width: 100%;
+  max-width: 640px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+th, td {
+  padding: 0.45rem 0.6rem;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.statusCell {
+  font-weight: 600;
+}
+
+.discrepancy {
+  font-size: 0.8rem;
+  color: #666;
+  margin-left: 0.25rem;
+  font-weight: normal;
+}
