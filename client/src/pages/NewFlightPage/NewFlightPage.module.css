@@ -89,6 +89,17 @@
   box-sizing: border-box;
 }
 
+.timeGrid :global(.field) input[type=number]::-webkit-outer-spin-button,
+.timeGrid :global(.field) input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.timeGrid :global(.field) input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 /* ── Inline aircraft sub-form ─────────────────────────────────────────────── */
 
 .subForm {

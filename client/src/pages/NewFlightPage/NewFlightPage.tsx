@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { useAircraft } from '../../hooks/useAircraft';
@@ -41,11 +41,26 @@ export default function NewFlightPage() {
 
   // ── Flight form state ─────────────────────────────────────────────────────
   const [date, setDate] = useState(todayIso());
+  const [blockOff, setBlockOff] = useState('');
+  const [blockOn, setBlockOn] = useState('');
   const [selectedAircraftId, setSelectedAircraftId] = useState('');
   // const [route, setRoute] = useState('');
     const [from, setFrom] = useState('');
       const [to, setTo] = useState('');
   const [totalFlightTime, setTotalFlightTime] = useState('');
+
+  // ── Auto-calculate total from block times ────────────────────────────────
+  useEffect(() => {
+    const offMatch = blockOff.match(/^(\d{1,2}):(\d{2})$/);
+    const onMatch  = blockOn.match(/^(\d{1,2}):(\d{2})$/);
+    if (!offMatch || !onMatch) return;
+    let diffMin =
+      (Number(onMatch[1]) * 60 + Number(onMatch[2])) -
+      (Number(offMatch[1]) * 60 + Number(offMatch[2]));
+    if (diffMin < 0) diffMin += 24 * 60; // overnight
+    setTotalFlightTime((diffMin / 60).toFixed(1));
+  }, [blockOff, blockOn]);
+
   const [pic, setPic] = useState('');
   const [sic, setSic] = useState('');
   const [dual, setDual] = useState('');
@@ -167,7 +182,8 @@ export default function NewFlightPage() {
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
-
+            <BlockTimeField id="blockOff" label="Block Off" value={blockOff} onChange={setBlockOff} />
+            <BlockTimeField id="blockOn"  label="Block On"  value={blockOn}  onChange={setBlockOn} />
             <div className={styles.field}>
               <label htmlFor="aircraft">Aircraft *</label>
               <select
@@ -393,10 +409,37 @@ function TimeField({ id, label, value, onChange }: FieldProps) {
         id={id}
         type="number"
         min="0"
-        step="0.1"
+        // step="0.1"
         placeholder="0.0"
         value={value}
         onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  );
+}
+
+function BlockTimeField({ id, label, value, onChange }: FieldProps) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    let raw = e.target.value.replace(/[^\d:]/g, '');
+    // Auto-insert colon after two digits
+    if (!raw.includes(':') && raw.length >= 2) {
+      raw = raw.slice(0, 2) + ':' + raw.slice(2);
+    }
+    if (raw.length > 5) return;
+    onChange(raw);
+  }
+
+  return (
+    <div className={styles.field}>
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        type="text"
+        inputMode="numeric"
+        placeholder="HH:MM"
+        maxLength={5}
+        value={value}
+        onChange={handleChange}
       />
     </div>
   );
