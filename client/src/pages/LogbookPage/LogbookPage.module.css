@@ -1,33 +1,51 @@
 .page h2 {
-  margin-bottom: 1rem;
+  margin-bottom: var(--sp-5);
+  font-size: var(--text-xl);
 }
 
 /* ── Card wrapper ─────────────────────────────────────────────────────────── */
 
 .card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
   overflow: hidden;
-  margin-bottom: 1rem;
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow);
 }
 
 .stale {
-  opacity: 0.6;
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 /* ── Grid layout ──────────────────────────────────────────────────────────── */
 
 .gridWrapper {
   overflow-x: auto;
-             /* date bo bo tail   model  from   to     total  pic    sic    dual   night  xc     imc    appr   ldg    del */
-  --grid-cols: 90px 65px 65px 80px 55px 58px 58px 50px 50px 50px 50px 50px 50px 50px 36px 40px 40px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  /* date  bo    bo    tail  model from  to    total pic   sic   dual  night xc    imc   appr  ldg   del */
+  --grid-cols: 90px 65px 65px 80px 55px 58px 58px 58px 50px 50px 50px 50px 50px 50px 36px 40px 60px;
+}
+
+.gridWrapper::-webkit-scrollbar {
+  height: 4px;
+}
+
+.gridWrapper::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.gridWrapper::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
 }
 
 .headerRow,
 .dataRow {
   display: grid;
-      /* grid-auto-flow: column; */
   grid-template-columns: var(--grid-cols);
   min-width: max-content;
 }
@@ -35,37 +53,40 @@
 /* ── Header ───────────────────────────────────────────────────────────────── */
 
 .headerRow {
-  background: #f7f7f7;
-  border-bottom: 2px solid #e0e0e0;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
 }
 
 .headerCell {
-  padding: 0.5rem 0.6rem;
-  font-size: 0.72rem;
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #777;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
   cursor: pointer;
   user-select: none;
   white-space: nowrap;
+  transition: color var(--duration) var(--ease);
 }
 
 .headerCell:hover {
-  color: #1a5276;
+  color: var(--brand);
 }
 
 .sortIcon {
-  margin-left: 0.25rem;
-  font-size: 0.6rem;
+  margin-left: 0.2rem;
+  font-size: 0.55rem;
+  vertical-align: middle;
 }
 
 /* ── Data rows ────────────────────────────────────────────────────────────── */
 
 .dataRow {
-  border-bottom: 1px solid #f0f0f0;
-  transition: background 0.1s;
-  font-family: jetbrains mono, monospace;
+  border-bottom: 1px solid var(--border);
+  transition: background var(--duration) var(--ease);
 }
 
 .dataRow:last-child {
@@ -73,22 +94,27 @@
 }
 
 .dataRow:hover {
-  background: #f5f9ff;
+  background: var(--brand-light);
+}
+
+.dataRow:hover .deleteBtn {
+  opacity: 1;
 }
 
 .cell {
-  padding: 0.45rem 0.6rem;
-  font-size: 0.875rem;
+  padding: var(--sp-2) var(--sp-3);
+  font-size: var(--text-sm);
   white-space: nowrap;
-  color: #333;
+  color: var(--text-1);
   display: flex;
   align-items: center;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
 }
 
 .num {
   justify-content: flex-end;
   font-variant-numeric: tabular-nums;
-  color: #444;
+  color: var(--text-2);
 }
 
 .delCell {
@@ -101,35 +127,107 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 26px;
-  height: 26px;
-  /* padding: 20px; */
+  width: 28px;
+  height: 28px;
+  padding: 0;
   background: transparent;
   border: 1px solid transparent;
-  border-radius: 4px;
-  color: #ccc;
-  cursor: pointer;
+  border-radius: var(--r-sm);
+  color: var(--text-3);
   opacity: 0;
-  transition: color 0.15s, border-color 0.15s, background 0.15s;
-  /* visibility:; */
-  
+  transition: color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              background var(--duration) var(--ease),
+              opacity var(--duration) var(--ease);
 }
 
 .deleteBtn:hover {
-  
-
-  color: #c0392b;
-  border-color: #f5b7b1;
-  background: #fdf2f2;
+  color: var(--error);
+  border-color: var(--error-border);
+  background: var(--error-bg);
   opacity: 1;
-  /* visibility: visible; */
 }
 
 /* ── Empty state ──────────────────────────────────────────────────────────── */
 
 .emptyRow {
-  padding: 2.5rem;
+  padding: var(--sp-12) var(--sp-8);
   text-align: center;
-  color: #999;
-  font-size: 0.875rem;
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+
+/* ── Mobile card layout ───────────────────────────────────────────────────── */
+
+@media (max-width: 767px) {
+  .card {
+    border-radius: var(--r-lg);
+    overflow: visible; /* let cards breathe */
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .gridWrapper {
+    overflow-x: visible;
+  }
+
+  .headerRow {
+    display: none;
+  }
+
+  /* Each row becomes a standalone card */
+  .dataRow {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      "date tail total del"
+      "from dest .     .  ";
+    row-gap: var(--sp-1);
+    column-gap: var(--sp-3);
+    padding: var(--sp-3) var(--sp-4);
+    margin-bottom: var(--sp-2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+    min-width: unset;
+  }
+
+  .dataRow:last-child {
+    border-bottom: 1px solid var(--border); /* restore for mobile */
+    margin-bottom: 0;
+  }
+
+  /* Hide all cells by default, then reveal named ones */
+  .dataRow > .cell {
+    /* display: none; */
+    padding: 0;
+  }
+
+  .cellDate  { display: flex; grid-area: date;  font-weight: 600; color: var(--text-1); font-size: var(--text-sm); }
+  .cellTail  { display: flex; grid-area: tail;  color: var(--text-2); font-size: var(--text-xs); align-items: center; }
+  .cellFrom  { display: flex; grid-area: from;  color: var(--text-3); font-size: var(--text-xs); }
+  .cellTo    { display: flex; grid-area: dest;  color: var(--text-3); font-size: var(--text-xs); }
+  .cellTotal { display: flex; grid-area: total; font-weight: 700; color: var(--brand); justify-content: flex-end; font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
+  .delCell   { display: flex; grid-area: del;   align-items: center; justify-content: center; }
+
+  /* Delete button always visible on mobile (no hover state) */
+  .deleteBtn {
+    opacity: 1;
+    color: var(--text-3);
+  }
+
+  /* Arrow between from and to */
+  .cellFrom:not(:empty)::after {
+    content: '→';
+    margin: 0 var(--sp-1);
+    color: var(--text-3);
+    font-family: sans-serif;
+  }
+
+  .emptyRow {
+    padding: var(--sp-8);
+  }
 }

@@ -124,22 +124,22 @@ export default function LogbookPage() {
               ) : (
                 data.flights.map((f) => (
                   <div key={f.id} className={styles.dataRow}>
-                    <div className={styles.cell}>{f.date.slice(0, 10)}</div>
-                    <div className={styles.cell}>{f.flightStart}</div>
-                    <div className={styles.cell}>{f.flightEnd}</div>
-                    <div className={styles.cell}>{f.tailNumber}</div>
-                    <div className={styles.cell}>{f.modelDisplay}</div>
-                    <div className={styles.cell}>{f.from}</div>
-                    <div className={styles.cell}>{f.to}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.totalFlightTime, usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.pic,             usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.sic,             usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.dual,            usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.nighttime,       usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.crossCountry,    usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.imc,             usesHHMM, true)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.approaches,      false,    false)}</div>
-                    <div className={`${styles.cell} ${styles.num}`}>{fmtNum(f.landings,        false,    false)}</div>
+                    <div className={`${styles.cell} ${styles.cellDate}`}>{f.date.slice(0, 10)}</div>
+                    <div className={`${styles.cell} ${styles.cellStart}`}>{f.flightStart}</div>
+                    <div className={`${styles.cell} ${styles.cellEnd}`}>{f.flightEnd}</div>
+                    <div className={`${styles.cell} ${styles.cellTail}`}>{f.tailNumber}</div>
+                    <div className={`${styles.cell} ${styles.cellModel}`}>{f.modelDisplay}</div>
+                    <div className={`${styles.cell} ${styles.cellFrom}`}>{f.from}</div>
+                    <div className={`${styles.cell} ${styles.cellTo}`}>{f.to}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTotal}`}>{fmtNum(f.totalFlightTime, usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.pic,             usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.sic,             usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.dual,            usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.nighttime,       usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.crossCountry,    usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.imc,             usesHHMM, true)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.approaches,      false,    false)}</div>
+                    <div className={`${styles.cell} ${styles.num} ${styles.cellTime}`}>{fmtNum(f.landings,        false,    false)}</div>
                     <div className={`${styles.cell} ${styles.delCell}`}>
                       <button
                         type="button"

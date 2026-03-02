@@ -1,8 +1,19 @@
 .error {
-  background: #fdecea;
-  border: 1px solid #f5c6cb;
-  color: #721c24;
-  padding: 0.6rem 0.9rem;
-  border-radius: 4px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  color: var(--error);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.error::before {
+  content: '⚠';
+  flex-shrink: 0;
   font-size: 0.9rem;
+  margin-top: 0.05rem;
 }

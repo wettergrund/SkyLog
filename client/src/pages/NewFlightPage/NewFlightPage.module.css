@@ -1,25 +1,36 @@
-
 .page {
-  max-width: 860px;
+  max-width: 820px;
 }
 
 .page h2 {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--sp-6);
+  font-size: var(--text-xl);
 }
 
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
 .card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 1.25rem;
-  margin-bottom: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: var(--sp-5) var(--sp-4);
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow);
+}
+
+@media (min-width: 640px) {
+  .card {
+    padding: var(--sp-6);
+  }
 }
 
 .cardTitle {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0 0 1rem 0;
-  color: #333;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin: 0 0 var(--sp-5) 0;
 }
 
 /* ── Field layout ─────────────────────────────────────────────────────────── */
@@ -27,68 +38,81 @@
 .fieldRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--sp-3) var(--sp-4);
   align-items: flex-end;
 }
 
-.field,
-:global(.field) {
+.field {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--sp-1);
   min-width: 120px;
+  flex: 1 1 120px;
 }
 
 .fieldWide {
-  flex: 1 1 200px;
+  flex: 1 1 160px;
 }
 
-.field label,
-:global(.field) label {
-  font-size: 0.8rem;
+.field label {
+  font-size: var(--text-xs);
   font-weight: 600;
-  color: #555;
+  color: var(--text-2);
+  letter-spacing: 0.02em;
 }
 
 .field input,
 .field select,
-.field textarea,
-:global(.field) input,
-:global(.field) select {
-  padding: 0.4rem 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
+
+.field textarea {
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  color: var(--text-1);
+  background: var(--surface);
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
 }
 
 .field input:focus,
 .field select:focus,
-.field textarea:focus,
-:global(.field) input:focus,
-:global(.field) select:focus {
-  border-color: #1a5276;
+.field textarea:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.field input::placeholder {
+  color: var(--text-3);
 }
 
 .field textarea {
   resize: vertical;
-  font-family: inherit;
+  line-height: 1.5;
 }
 
 /* ── Time grid ────────────────────────────────────────────────────────────── */
 
 .timeGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: var(--sp-3);
+}
+
+.timeGrid :global(.field) {
+  min-width: unset;
 }
 
 .timeGrid :global(.field) input {
   width: 100%;
   box-sizing: border-box;
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--text-sm);
 }
 
+/* Hide spinner on number inputs in time grid */
 .timeGrid :global(.field) input[type=number]::-webkit-outer-spin-button,
 .timeGrid :global(.field) input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -98,43 +122,58 @@
 .timeGrid :global(.field) input[type=number] {
   -moz-appearance: textfield;
   appearance: textfield;
+    padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  color: var(--text-1);
+  background: var(--surface);
+  outline: none;
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
 }
 
 /* ── Inline aircraft sub-form ─────────────────────────────────────────────── */
 
 .subForm {
-  margin-top: 1rem;
-  padding: 1rem;
-  background: #f9f9f9;
-  border: 1px dashed #ccc;
-  border-radius: 4px;
+  margin-top: var(--sp-5);
+  padding: var(--sp-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
 }
 
 .subFormTitle {
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin: 0 0 0.75rem 0;
-  color: #444;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-3);
+  margin: 0 0 var(--sp-4) 0;
 }
 
 .addAircraftBtn {
-  margin-top: 0.75rem;
-  padding: 0.45rem 1rem;
-  background: #1a5276;
+  margin-top: var(--sp-4);
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--brand);
   color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  cursor: pointer;
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: background var(--duration) var(--ease),
+              transform var(--duration) var(--ease);
 }
 
 .addAircraftBtn:hover {
-  background: #154360;
+  background: var(--brand-hover);
+  transform: translateY(-1px);
 }
 
 .addAircraftBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
 /* ── Checkboxes ───────────────────────────────────────────────────────────── */
@@ -142,15 +181,24 @@
 .checkRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 1.25rem;
-  margin: 0.75rem 0;
+  gap: var(--sp-5);
+  margin: var(--sp-4) 0;
 }
 
 .checkLabel {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.875rem;
+  gap: var(--sp-2);
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkLabel input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand);
   cursor: pointer;
 }
 
@@ -159,39 +207,51 @@
 .actions {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 0.25rem;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+  padding-bottom: var(--sp-2);
 }
 
 .cancelBtn {
-  padding: 0.55rem 1.25rem;
-  background: transparent;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  color: #555;
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--surface);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-2);
+  transition: background var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
 }
 
 .cancelBtn:hover {
-  background: #f5f5f5;
+  background: var(--surface-2);
+  border-color: var(--text-3);
 }
 
 .submitBtn {
-  padding: 0.55rem 1.5rem;
-  background: #1a5276;
+  padding: var(--sp-2) var(--sp-6);
+  background: var(--brand);
   color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: background var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+  box-shadow: var(--shadow-sm);
 }
 
-.submitBtn:hover {
-  background: #154360;
+.submitBtn:hover:not(:disabled) {
+  background: var(--brand-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 
 .submitBtn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
