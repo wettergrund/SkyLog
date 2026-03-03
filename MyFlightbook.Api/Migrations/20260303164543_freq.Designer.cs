@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFlightbook.Api.Data;
 using NetTopologySuite.Geometries;
@@ -12,9 +13,11 @@ using NetTopologySuite.Geometries;
 namespace MyFlightbook.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260303164543_freq")]
+    partial class freq
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,11 +117,6 @@ namespace MyFlightbook.Api.Migrations
 
                     b.Property<string>("Municipality")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Website")
                         .HasColumnType("nvarchar(max)");

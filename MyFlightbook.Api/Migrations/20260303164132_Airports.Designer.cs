@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFlightbook.Api.Data;
 using NetTopologySuite.Geometries;
@@ -12,9 +13,11 @@ using NetTopologySuite.Geometries;
 namespace MyFlightbook.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260303164132_Airports")]
+    partial class Airports
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,7 +88,6 @@ namespace MyFlightbook.Api.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ElevationFt")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("IATA")
@@ -114,11 +116,6 @@ namespace MyFlightbook.Api.Migrations
 
                     b.Property<string>("Municipality")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Website")
                         .HasColumnType("nvarchar(max)");
@@ -150,8 +147,7 @@ namespace MyFlightbook.Api.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<decimal>("FrequencyMHz")
-                        .HasPrecision(18, 3)
-                        .HasColumnType("decimal(18,3)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

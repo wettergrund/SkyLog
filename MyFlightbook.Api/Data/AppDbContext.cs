@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using MyFlightbook.Api.Models.AirportDb;
+
 namespace MyFlightbook.Api.Data;
 
 public class AppDbContext : DbContext
@@ -12,6 +15,9 @@ public class AppDbContext : DbContext
     public DbSet<UserAircraft> UserAircraft => Set<UserAircraft>();
     public DbSet<PropertyType> PropertyTypes => Set<PropertyType>();
     public DbSet<FlightProperty> FlightProperties => Set<FlightProperty>();
+    public DbSet<Airport> Airports => Set<Airport>();
+    public DbSet<Frequency> Frequencies => Set<Frequency>();
+
 
     protected override void OnModelCreating(ModelBuilder mb)
     {
@@ -45,10 +51,23 @@ public class AppDbContext : DbContext
             m.Property(x => x.LastOilChange).HasPrecision(8, 2);
             m.Property(x => x.LastNewEngine).HasPrecision(8, 2);
         });
+        // Airport
+        mb.Entity<Airport>()
+            .HasIndex(a => a.ICAO).IsUnique();
+        // For Airport Elevation (e.g., 12345.67)
+        mb.Entity<Airport>()
+            .Property( a => a.ElevationFt )
+            .HasPrecision( 18, 2 );
+
+        // For Frequency (e.g., 128.550 or 1090.000)
+        mb.Entity<Frequency>()
+            .Property( f => f.FrequencyMHz )
+            .HasPrecision( 18, 3 ); // 3 decimal places is common for aviation frequencies
 
         // ── Enum → int storage ────────────────────────────────────────────────
         mb.Entity<Aircraft>()
             .Property(a => a.InstanceType).HasConversion<int>();
+            mb.Entity<Airport>().Property(a => a.AirportType).HasConversion<int>();
 
         mb.Entity<UserAircraft>()
             .Property(ua => ua.RoleForPilot).HasConversion<int>();

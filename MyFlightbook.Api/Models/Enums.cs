@@ -31,3 +31,13 @@ public enum PropertyValueKind
     DateTime = 4,
     String = 5
 }
+public enum AirportType
+{
+    Unknown = 0,
+    Small = 1,
+    Large = 2,
+    Medium = 3,
+    Heliport = 4,
+    SeaplaneBase = 5,
+    Balloonport = 6
+}

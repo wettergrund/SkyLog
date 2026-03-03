@@ -65,7 +65,7 @@ string connStr = config.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection is required in configuration.");
 
 builder.Services.AddDbContext<AppDbContext>(opt =>
-    opt.UseSqlServer(connStr));
+    opt.UseSqlServer(connStr , db => db.UseNetTopologySuite()) );
 
 // ── Repositories & Services ───────────────────────────────────────────────────
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
