@@ -3,7 +3,6 @@ namespace MyFlightbook.Api.Data;
 public class AppDbContext : DbContext
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
     public DbSet<AppUser> Users => Set<AppUser>();
     public DbSet<Flight> Flights => Set<Flight>();
     public DbSet<Aircraft> Aircraft => Set<Aircraft>();

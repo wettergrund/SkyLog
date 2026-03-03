@@ -1,5 +1,8 @@
 using FirebaseAdmin;
+using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
+
+//using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +25,8 @@ if (!string.IsNullOrEmpty(saPath) && File.Exists(saPath))
     {
         Credential = GoogleCredential.FromFile(saPath)
     });
+
+    Environment.SetEnvironmentVariable( "GOOGLE_APPLICATION_CREDENTIALS", saPath);
 }
 else if (Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS") is not null)
 {
@@ -64,6 +69,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 // ── Repositories & Services ───────────────────────────────────────────────────
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddSingleton( FirebaseAuth.DefaultInstance );
 builder.Services.AddScoped<IUserResolver, FirebaseUserResolver>();
 builder.Services.AddHttpContextAccessor();
 

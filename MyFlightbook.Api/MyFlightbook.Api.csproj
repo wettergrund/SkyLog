@@ -12,6 +12,7 @@
   <ItemGroup>
     <!-- Firebase Admin SDK (token revocation, push, server-side user management) -->
     <PackageReference Include="FirebaseAdmin" Version="3.*" />
+    <PackageReference Include="Google.Cloud.Firestore" Version="4.1.0" />
 
     <!-- JWT Bearer — validates Firebase ID tokens via Google's OIDC endpoint -->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.*" />

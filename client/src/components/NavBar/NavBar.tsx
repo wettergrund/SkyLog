@@ -50,6 +50,15 @@ export default function NavBar() {
       >
         Log Flight
       </NavLink>
+            <NavLink
+            
+        to="/flights/new"
+        className={({ isActive }) =>
+          `${styles.link}${isActive ? ` ${styles.active}` : ''}`
+        }
+      >
+        Admin
+      </NavLink>
       <button className={styles.logoutBtn} onClick={handleLogout}>
         Sign out
       </button>

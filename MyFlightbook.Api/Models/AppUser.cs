@@ -23,13 +23,15 @@ public class AppUser
     public bool UsesHHMM { get; set; }
 
     public bool IsInstructor { get; set; }
+    
+    public bool IsSuperUser { get; set; }
 
     [MaxLength(64)]
     public string? PreferredTimeZoneId { get; set; }
 
     /// <summary>Regulatory jurisdiction for currency calculations (FAA, EASA, CASA, etc.).</summary>
     [MaxLength(32)]
-    public string CurrencyJurisdiction { get; set; } = "FAA";
+    public string CurrencyJurisdiction { get; set; } = "EASA";
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime LastActivity { get; set; } = DateTime.UtcNow;

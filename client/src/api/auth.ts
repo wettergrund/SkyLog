@@ -27,6 +27,7 @@ export async function loginWithGoogle(): Promise<void> {
   // Sync Google display name to our API on every Google sign-in.
   // FirebaseUserResolver auto-provisions the AppUser row if it's a new account.
   const displayName = result.user.displayName ?? '';
+  console.log(displayName)
   const spaceIdx   = displayName.indexOf(' ');
   const firstName  = spaceIdx >= 0 ? displayName.slice(0, spaceIdx) : displayName;
   const lastName   = spaceIdx >= 0 ? displayName.slice(spaceIdx + 1) : '';

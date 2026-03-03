@@ -1,3 +1,5 @@
+using FirebaseAdmin.Auth;
+
 namespace MyFlightbook.Api.Services;
 
 /// <summary>
@@ -7,8 +9,12 @@ namespace MyFlightbook.Api.Services;
 public class FirebaseUserResolver : IUserResolver
 {
     private readonly AppDbContext _db;
-
-    public FirebaseUserResolver(AppDbContext db) => _db = db;
+    private readonly FirebaseAuth _firebaseAuth;
+    public FirebaseUserResolver(AppDbContext db, FirebaseAuth firebaseAuth)
+    {
+        _db = db;
+        _firebaseAuth = firebaseAuth;
+    }
 
     public async Task<AppUser> GetOrCreateAsync(ClaimsPrincipal principal)
     {
@@ -37,6 +43,31 @@ public class FirebaseUserResolver : IUserResolver
         else
         {
             user.LastActivity = DateTime.UtcNow;
+        }
+
+
+        if (user is not null) {
+            // 1. Define the roles as they exist in your DB
+            var expectedClaims = new Dictionary<string, object>
+    {
+        { "superuser", user.IsSuperUser },
+        { "instructor", user.IsInstructor } // Assuming these exist in your AppUser entity
+    };
+
+            // 2. Check if the current token matches ALL expected claims
+            bool needsSync = expectedClaims.Any( expected =>
+            {
+                var claimValue = principal.FindFirstValue( expected.Key );
+                return claimValue != expected.Value.ToString().ToLower();
+            } );
+
+            // 3. Update Firebase only if there is a mismatch
+            if (needsSync)
+            {
+                await _firebaseAuth.SetCustomUserClaimsAsync( uid, expectedClaims );
+            }
+
+
         }
 
         await _db.SaveChangesAsync();

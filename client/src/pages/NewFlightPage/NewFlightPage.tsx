@@ -36,7 +36,6 @@ export default function NewFlightPage() {
 
   // ── Mutations ─────────────────────────────────────────────────────────────
   const createAircraftMutation = useCreateAircraft();
-
   const createFlightMutation = useCreateFlight();
 
   // ── Flight form state ─────────────────────────────────────────────────────
@@ -44,9 +43,8 @@ export default function NewFlightPage() {
   const [blockOff, setBlockOff] = useState('');
   const [blockOn, setBlockOn] = useState('');
   const [selectedAircraftId, setSelectedAircraftId] = useState('');
-  // const [route, setRoute] = useState('');
-    const [from, setFrom] = useState('');
-      const [to, setTo] = useState('');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
   const [totalFlightTime, setTotalFlightTime] = useState('');
 
   // ── Auto-calculate total from block times ────────────────────────────────
@@ -182,9 +180,8 @@ export default function NewFlightPage() {
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
-            <BlockTimeField id="blockOff" label="Block Off" value={blockOff} onChange={setBlockOff} />
-            <BlockTimeField id="blockOn"  label="Block On"  value={blockOn}  onChange={setBlockOn} />
-            <div className={styles.field}>
+
+            <div className={`${styles.field} ${styles.fieldGrow}`}>
               <label htmlFor="aircraft">Aircraft *</label>
               <select
                 id="aircraft"
@@ -203,20 +200,21 @@ export default function NewFlightPage() {
               </select>
             </div>
 
-            <div className={`${styles.field} ${styles.fieldWide}`}>
-              <label htmlFor="route">From</label>
+            <div className={`${styles.field} ${styles.fieldNarrow}`}>
+              <label htmlFor="from">From</label>
               <input
-                id="route"
+                id="from"
                 type="text"
                 placeholder="ESOW"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
               />
             </div>
-                        <div className={`${styles.field} ${styles.fieldWide}`}>
-              <label htmlFor="route">To</label>
+
+            <div className={`${styles.field} ${styles.fieldNarrow}`}>
+              <label htmlFor="to">To</label>
               <input
-                id="route"
+                id="to"
                 type="text"
                 placeholder="ESSA"
                 value={to}
@@ -313,32 +311,45 @@ export default function NewFlightPage() {
         {/* ── Section 2: Flight times ──────────────────────────────────────── */}
         <section className={styles.card}>
           <h3 className={styles.cardTitle}>Flight Times</h3>
-          <div className={styles.timeGrid}>
+
+          <div className={styles.blockRow}>
+            <BlockTimeField id="blockOff" label="Block Off" value={blockOff} onChange={setBlockOff} />
+            <span className={styles.blockSep}>→</span>
+            <BlockTimeField id="blockOn" label="Block On" value={blockOn} onChange={setBlockOn} />
+          </div>
+
+          <div className={styles.timePrimary}>
             <TimeField id="totalFlightTime" label="Total *" value={totalFlightTime} onChange={setTotalFlightTime} />
             <TimeField id="pic"             label="PIC"     value={pic}             onChange={setPic} />
-            <TimeField id="sic"             label="SIC"     value={sic}             onChange={setSic} />
-            <TimeField id="dual"            label="Dual"    value={dual}            onChange={setDual} />
-            <TimeField id="cfi"             label="CFI"     value={cfi}             onChange={setCfi} />
-            <TimeField id="crossCountry"    label="Cross Country" value={crossCountry} onChange={setCrossCountry} />
-            <TimeField id="nighttime"       label="Night"   value={nighttime}       onChange={setNighttime} />
-            <TimeField id="imc"             label="IMC"     value={imc}             onChange={setImc} />
-            <TimeField id="simulatedIFR"    label="Sim IFR" value={simulatedIFR}    onChange={setSimulatedIFR} />
-            <TimeField id="groundSim"       label="Ground Sim" value={groundSim}    onChange={setGroundSim} />
           </div>
+
+          <details className={styles.timeDetails}>
+            <summary className={styles.timeDetailsSummary}>More time fields</summary>
+            <div className={styles.timeGrid}>
+              <TimeField id="sic"          label="SIC"           value={sic}          onChange={setSic} />
+              <TimeField id="dual"         label="Dual"          value={dual}         onChange={setDual} />
+              <TimeField id="cfi"          label="CFI"           value={cfi}          onChange={setCfi} />
+              <TimeField id="crossCountry" label="Cross Country" value={crossCountry} onChange={setCrossCountry} />
+              <TimeField id="nighttime"    label="Night"         value={nighttime}    onChange={setNighttime} />
+              <TimeField id="imc"          label="IMC"           value={imc}          onChange={setImc} />
+              <TimeField id="simulatedIFR" label="Sim IFR"       value={simulatedIFR} onChange={setSimulatedIFR} />
+              <TimeField id="groundSim"    label="Ground Sim"    value={groundSim}    onChange={setGroundSim} />
+            </div>
+          </details>
         </section>
 
-        {/* ── Section 3: Landings & notes ──────────────────────────────────── */}
+        {/* ── Section 3: Landings ──────────────────────────────────────────── */}
         <section className={styles.card}>
-          <h3 className={styles.cardTitle}>Landings &amp; Notes</h3>
+          <h3 className={styles.cardTitle}>Landings</h3>
 
           <div className={styles.fieldRow}>
-            <IntField id="landings"        label="Landings"    value={landings}        onChange={setLandings} />
-            <IntField id="fullStop"        label="Full Stop"   value={fullStopLandings} onChange={setFullStopLandings} />
-            <IntField id="nightLandings"   label="Night Ldg"   value={nightLandings}   onChange={setNightLandings} />
-            <IntField id="approaches"      label="Approaches"  value={approaches}      onChange={setApproaches} />
+            <IntField id="landings"      label="Landings"   value={landings}         onChange={setLandings} />
+            <IntField id="fullStop"      label="Full Stop"  value={fullStopLandings} onChange={setFullStopLandings} />
+            <IntField id="nightLandings" label="Night Ldg"  value={nightLandings}    onChange={setNightLandings} />
+            <IntField id="approaches"    label="Approaches" value={approaches}       onChange={setApproaches} />
           </div>
 
-          <div className={styles.checkRow}>
+          {/* <div className={styles.checkRow}>
             <label className={styles.checkLabel}>
               <input
                 type="checkbox"
@@ -347,26 +358,20 @@ export default function NewFlightPage() {
               />
               Holding Procedures
             </label>
-            <label className={styles.checkLabel}>
-              <input
-                type="checkbox"
-                checked={isPublic}
-                onChange={(e) => setIsPublic(e.target.checked)}
-              />
-              Public Flight
-            </label>
-          </div>
-
-          <div className={styles.field}>
-            <label htmlFor="comment">Comment</label>
-            <textarea
-              id="comment"
-              rows={3}
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-            />
-          </div>
+          </div> */}
         </section>
+
+        {/* ── Comment ──────────────────────────────────────────────────────── */}
+        <div className={`${styles.field} ${styles.fieldFull}`}>
+          <label htmlFor="comment">Notes</label>
+          <textarea
+            id="comment"
+            rows={2}
+            placeholder="Optional notes about the flight…"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+        </div>
 
         {createFlightMutation.isError && (
           <ErrorMessage
@@ -379,12 +384,22 @@ export default function NewFlightPage() {
         )}
 
         <div className={styles.actions}>
-          <button type="button" className={styles.cancelBtn} onClick={() => navigate('/logbook')}>
-            Cancel
-          </button>
-          <button type="submit" className={styles.submitBtn} disabled={submitDisabled}>
-            {createFlightMutation.isPending ? 'Saving…' : 'Save Flight'}
-          </button>
+          {/* <label className={styles.checkLabel}>
+            <input
+              type="checkbox"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+            />
+            Public flight
+          </label> */}
+          <div className={styles.actionsBtns}>
+            <button type="button" className={styles.cancelBtn} onClick={() => navigate('/logbook')}>
+              Cancel
+            </button>
+            <button type="submit" className={styles.submitBtn} disabled={submitDisabled}>
+              {createFlightMutation.isPending ? 'Saving…' : 'Save Flight'}
+            </button>
+          </div>
         </div>
 
       </form>
@@ -403,13 +418,12 @@ interface FieldProps {
 
 function TimeField({ id, label, value, onChange }: FieldProps) {
   return (
-    <div className="field">
+    <div className={styles.field}>
       <label htmlFor={id}>{label}</label>
       <input
         id={id}
         type="number"
         min="0"
-        // step="0.1"
         placeholder="0.0"
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -447,7 +461,7 @@ function BlockTimeField({ id, label, value, onChange }: FieldProps) {
 
 function IntField({ id, label, value, onChange }: FieldProps) {
   return (
-    <div className="field">
+    <div className={styles.field}>
       <label htmlFor={id}>{label}</label>
       <input
         id={id}

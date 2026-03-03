@@ -15,6 +15,7 @@ export interface UserProfile {
   fullName: string;
   usesHHMM: boolean;
   isInstructor: boolean;
+  superuser: boolean;
   preferredTimeZoneId: string | null;
   currencyJurisdiction: string;
   createdAt: string;
