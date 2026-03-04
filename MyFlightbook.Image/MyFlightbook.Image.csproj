@@ -16,7 +16,6 @@
   <ItemGroup>
     <ProjectReference Include="..\MyFlightbook.Geography\MyFlightbook.Geography.csproj" />
     <ProjectReference Include="..\MyFlightbook.SharedUtility\MyFlightbook.SharedUtility.csproj" />
-    <ProjectReference Include="..\MyFlightbookData\MyFlightbook.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

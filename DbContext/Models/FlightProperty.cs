@@ -1,4 +1,4 @@
-namespace MyFlightbook.Api.Models;
+namespace MyFlightbook.Data.Models;
 
 /// <summary>
 /// A concrete custom property value for a specific flight.

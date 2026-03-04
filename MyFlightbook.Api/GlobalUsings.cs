@@ -5,7 +5,5 @@ global using System.Security.Claims;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
-global using MyFlightbook.Api.Data;
-global using MyFlightbook.Api.Models;
 global using MyFlightbook.Api.Repositories;
 global using MyFlightbook.Api.Services;

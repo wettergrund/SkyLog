@@ -1,4 +1,4 @@
-namespace MyFlightbook.Api.Models;
+namespace MyFlightbook.Data.Models;
 
 /// <summary>
 /// Owned entity — stored as columns in the Aircraft table.

@@ -1,4 +1,6 @@
-namespace MyFlightbook.Api.Models;
+
+
+namespace MyFlightbook.Data.Models;
 
 /// <summary>
 /// Join table between AppUser and Aircraft with per-user configuration.

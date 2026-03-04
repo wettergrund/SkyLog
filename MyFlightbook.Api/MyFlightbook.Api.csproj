@@ -30,4 +30,12 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DbContext\MyFlightbook.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
 </Project>

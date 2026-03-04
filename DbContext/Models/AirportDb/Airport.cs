@@ -1,6 +1,6 @@
 ﻿using NetTopologySuite.Geometries;
 
-namespace MyFlightbook.Api.Models.AirportDb
+namespace MyFlightbook.Data.Models.AirportDb
 {
     [Table( "airport" )]
     public class Airport

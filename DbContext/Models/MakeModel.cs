@@ -1,4 +1,5 @@
-namespace MyFlightbook.Api.Models;
+
+namespace MyFlightbook.Data.Models;
 
 [Table("make_models")]
 public class MakeModel

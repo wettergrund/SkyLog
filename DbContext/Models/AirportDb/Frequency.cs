@@ -1,4 +1,4 @@
-﻿namespace MyFlightbook.Api.Models.AirportDb
+﻿namespace MyFlightbook.Data.Models.AirportDb
 {
     [Table( "frequency" )]
     public class Frequency

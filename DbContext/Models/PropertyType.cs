@@ -1,4 +1,4 @@
-namespace MyFlightbook.Api.Models;
+namespace MyFlightbook.Data.Models;
 
 /// <summary>
 /// Defines a custom property type that can be attached to flights

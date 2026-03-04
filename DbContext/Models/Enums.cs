@@ -1,4 +1,4 @@
-namespace MyFlightbook.Api.Models;
+namespace MyFlightbook.Data.Models;
 
 public enum AircraftInstanceType
 {

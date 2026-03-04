@@ -1,4 +1,4 @@
-namespace MyFlightbook.Api.Models;
+namespace MyFlightbook.Data.Models;
 
 [Table("app_users")]
 public class AppUser

@@ -1,4 +1,4 @@
-namespace MyFlightbook.Api.Models;
+namespace MyFlightbook.Data.Models;
 
 /// <summary>
 /// Lookup table for FAA/ICAO category and class combinations

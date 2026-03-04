@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using MyFlightbook.Api.Data;
 using MyFlightbook.Api.Middleware;
 using MyFlightbook.Api.Repositories;
 using MyFlightbook.Api.Services;
+using MyFlightbook.Data.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var config  = builder.Configuration;
