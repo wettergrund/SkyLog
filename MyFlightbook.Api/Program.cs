@@ -4,13 +4,10 @@ using Google.Apis.Auth.OAuth2;
 
 //using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using MyFlightbook.Api.Middleware;
-using MyFlightbook.Api.Repositories;
-using MyFlightbook.Api.Services;
-using MyFlightbook.Data.Data;
+using MyFlightbook.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 var config  = builder.Configuration;

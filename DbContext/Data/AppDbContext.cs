@@ -4,7 +4,7 @@
 using MyFlightbook.Data.Models;
 using MyFlightbook.Data.Models.AirportDb;
 
-namespace MyFlightbook.Data.Data;
+namespace MyFlightbook.Data;
 
 public class AppDbContext : DbContext
 {

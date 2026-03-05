@@ -431,3 +431,4 @@ MigrationBackup/
 .idea/
 MyFlightbook.Web/ILLink/ILLink.Descriptors.LibraryBuild.xml
 /MyFlightbook.Api/serviceAccountKey.json
+/MyFlightbook.Api/appsettings.dev.json
