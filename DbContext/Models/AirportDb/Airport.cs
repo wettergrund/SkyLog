@@ -12,16 +12,15 @@ namespace MyFlightbook.Data.Models.AirportDb
         public string ICAO { get; set; } = null!;
 
         [ MaxLength( 14 )]
-        public string IATA { get; set; }
+        public string? IATA { get; set; }
         [MaxLength( 255 )]
         public string Name { get; set; }
         public AirportType AirportType { get; set; } = AirportType.Unknown;
-        public Point? LatitudeDeg { get; set; }
-        public Point? LongitudeDeg { get; set; }
+        public Point? Location { get; set; }
         public decimal ElevationFt { get; set; }
-        [MaxLength( 4 )]
+        [MaxLength( 16 )]
         public string? IsoCountry { get; set; }
-        [MaxLength( 4 )]
+        [MaxLength( 16 )]
         public string? IsoRegion { get; set; }
         public string? Municipality { get; set; }
         public string? Website { get; set; }

@@ -7,3 +7,6 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using MyFlightbook.Api.Repositories;
 global using MyFlightbook.Api.Services;
+global using MyFlightbook.Data;
+global using MyFlightbook.Data.Models;
+global using MyFlightbook.Data.Models.AirportDb;
