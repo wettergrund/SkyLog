@@ -11,6 +11,13 @@ const STATUS_LABELS: Record<string, string> = {
   NoDate: 'No Date',
 };
 
+const STATUS_CLASS: Record<string, string> = {
+  OK: 'statusOk',
+  GettingClose: 'statusWarning',
+  NotCurrent: 'statusDanger',
+  NoDate: 'statusNone',
+};
+
 export default function CurrencyPage() {
   const { data, isLoading, isError, error } = useCurrency();
 
@@ -20,37 +27,34 @@ export default function CurrencyPage() {
 
   return (
     <div className={styles.page}>
-      <h2>Currency</h2>
+      <h2 className={styles.pageTitle}>Currency</h2>
 
       {data.length === 0 ? (
-        <p>No currency items found.</p>
+        <p className={styles.empty}>No currency items found.</p>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Requirement</th>
-              <th>Expires / Value</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, i) => (
-              <tr key={i}>
-                <td>{item.attribute}</td>
-                <td>{item.value}</td>
-                <td
-                  className={styles.statusCell}
-                  style={{ color: statusToColor(item.status) }}
-                >
+        <div className={styles.bentoGrid}>
+          {data.map((item, i) => (
+            <div
+              key={i}
+              className={`${styles.bentoCard} ${styles[STATUS_CLASS[item.status] ?? 'statusNone']}`}
+            >
+              <span className={styles.bentoLabel}>{item.attribute}</span>
+              <span className={styles.bentoValue}>{item.value}</span>
+              <div className={styles.bentoFooter}>
+                <span
+                  className={styles.statusDot}
+                  style={{ background: statusToColor(item.status) }}
+                />
+                <span className={styles.statusText}>
                   {STATUS_LABELS[item.status] ?? item.status}
-                  {item.discrepancy && (
-                    <span className={styles.discrepancy}>({item.discrepancy})</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </span>
+                {item.discrepancy && (
+                  <span className={styles.discrepancy}>({item.discrepancy})</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

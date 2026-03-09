@@ -18,6 +18,15 @@ function formatValue(item: TotalsItem, usesHHMM: boolean): string {
   }
 }
 
+function typeClass(numericType: string): string {
+  switch (numericType) {
+    case 'Time':     return styles.typeTime;
+    case 'Currency': return styles.typeCurrency;
+    case 'Integer':  return styles.typeInteger;
+    default:         return styles.typeDecimal;
+  }
+}
+
 export default function TotalsPage() {
   const { data, isLoading, isError, error } = useTotals();
 
@@ -25,7 +34,6 @@ export default function TotalsPage() {
   if (isError) return <ErrorMessage message={error instanceof Error ? error.message : 'Failed to load totals'} />;
   if (!data) return null;
 
-  // Group totals by ti.group, preserving order
   const groups: Map<string, TotalsItem[]> = new Map();
   for (const item of data.totals) {
     const key = item.group ?? '';
@@ -35,34 +43,26 @@ export default function TotalsPage() {
 
   return (
     <div className={styles.page}>
-      <h2>Totals</h2>
+      <h2 className={styles.pageTitle}>Totals</h2>
 
-      {groups.size === 0 && <p>No totals found.</p>}
+      {groups.size === 0 && <p className={styles.empty}>No totals found.</p>}
 
       {[...groups.entries()].map(([groupName, items]) => (
         <div key={groupName} className={styles.group}>
           {groupName && <h3 className={styles.groupTitle}>{groupName}</h3>}
-          <table>
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th style={{ textAlign: 'right', width: '8rem' }}>Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item, i) => (
-                <tr key={i}>
-                  <td>
-                    {item.description}
-                    {item.subDescription && (
-                      <span className={styles.sub}> — {item.subDescription}</span>
-                    )}
-                  </td>
-                  <td className={styles.val}>{formatValue(item, data.useHHMM)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div className={styles.bentoGrid}>
+            {items.map((item, i) => (
+              <div key={i} className={`${styles.bentoCard} ${typeClass(item.numericType)}`}>
+                <span className={styles.bentoLabel}>
+                  {item.description}
+                  {item.subDescription && (
+                    <small className={styles.bentoSub}>{item.subDescription}</small>
+                  )}
+                </span>
+                <span className={styles.bentoValue}>{formatValue(item, data.useHHMM)}</span>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>

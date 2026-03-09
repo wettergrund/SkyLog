@@ -1,21 +1,25 @@
 .page {
-  max-width: 820px;
+  max-width: 860px;
 }
 
-.page h2 {
-  margin-bottom: var(--sp-6);
+.pageTitle {
+  margin-bottom: var(--sp-8);
   font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
-/* ── Card ─────────────────────────────────────────────────────────────────── */
+/* ── Glass card base ──────────────────────────────────────────────────────── */
 
 .card {
   background: var(--surface);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   padding: var(--sp-5) var(--sp-4);
-  margin-bottom: var(--sp-4);
-  box-shadow: var(--shadow);
+  margin-bottom: var(--sp-5);
+  box-shadow: var(--shadow-md), var(--shadow-inset);
 }
 
 @media (min-width: 640px) {
@@ -25,15 +29,381 @@
 }
 
 .cardTitle {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  margin: 0 0 var(--sp-5) 0;
+  opacity: 0.8;
+}
+
+/* ── Aircraft picker ──────────────────────────────────────────────────────── */
+
+.aircraftLoading {
+  color: var(--text-3);
   font-size: var(--text-sm);
+  padding: var(--sp-4) 0;
+}
+
+.aircraftGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: var(--sp-3);
+}
+
+.aircraftCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--duration) var(--ease),
+    border-color var(--duration) var(--ease),
+    box-shadow var(--duration) var(--ease),
+    transform var(--duration) var(--ease);
+}
+
+.aircraftCard:hover {
+  background: var(--surface-hover);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.aircraftCardSelected {
+  background: var(--surface-active) !important;
+  border-color: var(--brand) !important;
+  box-shadow: 0 0 0 1px var(--brand), var(--shadow-glow) !important;
+  transform: translateY(-2px);
+}
+
+.aircraftTail {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-1);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+.aircraftModel {
+  font-size: var(--text-xs);
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.aircraftCategory {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}
+
+.aircraftCardAdd {
+  border-style: dashed;
+  border-color: var(--border-input);
+}
+
+.aircraftCardAdd:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+
+.aircraftAddIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--text-3);
+  transition: color var(--duration) var(--ease);
+}
+
+.aircraftCardAdd:hover .aircraftAddIcon {
+  color: var(--brand);
+}
+
+.aircraftAddLabel {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+  font-weight: 500;
+  transition: color var(--duration) var(--ease);
+}
+
+.aircraftCardAdd:hover .aircraftAddLabel {
+  color: var(--brand);
+}
+
+/* ── Inline new aircraft sub-form ─────────────────────────────────────────── */
+
+.subForm {
+  margin-top: var(--sp-5);
+  padding: var(--sp-4);
+  background: var(--subform-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+}
+
+.subFormTitle {
+  font-size: var(--text-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--text-3);
-  margin: 0 0 var(--sp-5) 0;
+  margin: 0 0 var(--sp-4) 0;
 }
 
-/* ── Field layout ─────────────────────────────────────────────────────────── */
+.addAircraftBtn {
+  margin-top: var(--sp-4);
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--brand);
+  color: var(--brand-text);
+  border: none;
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  transition: background var(--duration) var(--ease),
+              transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+
+.addAircraftBtn:hover {
+  background: var(--brand-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+}
+
+.addAircraftBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ── Airline ticket card ──────────────────────────────────────────────────── */
+
+.ticket {
+  background: linear-gradient(135deg,
+    var(--ticket-from) 0%,
+    var(--surface) 50%,
+    var(--ticket-to) 100%
+  );
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid var(--ticket-border);
+  border-radius: var(--r-2xl);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  margin-bottom: var(--sp-4);
+  box-shadow: var(--shadow-md), var(--shadow-inset), 0 0 40px rgba(56, 189, 248, 0.06);
+  position: relative;
+  overflow: hidden;
+}
+
+.ticket::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ticket-shimmer), transparent);
+}
+
+.ticketDate {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.ticketMetaLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--brand);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.ticketDateInput {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r);
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--text-1);
+  font-size: var(--text-sm);
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+  color-scheme: dark;
+}
+
+.ticketDateInput:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.ticketBody {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+@media (max-width: 480px) {
+  .ticketBody {
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+  }
+}
+
+.ticketAirport {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.ticketIcao {
+  width: 100%;
+  max-width: 140px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-lg);
+  padding: var(--sp-3) var(--sp-2);
+  color: var(--text-1);
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em;
+  outline: none;
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease),
+              background var(--duration) var(--ease);
+  text-transform: uppercase;
+}
+
+.ticketIcao::placeholder {
+  color: var(--text-3);
+  font-weight: 400;
+}
+
+.ticketIcao:focus {
+  border-color: var(--brand);
+  background: rgba(56, 189, 248, 0.05);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.ticketAirportLabel {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-3);
+}
+
+.ticketBlockTime {
+  width: 100%;
+  max-width: 140px;
+}
+
+/* ── Ticket connector (the line with plane) ───────────────────────────────── */
+
+.ticketConnector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: 0 var(--sp-2);
+}
+
+.ticketConnectorLine {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  width: 100%;
+  min-width: 80px;
+}
+
+.ticketConnectorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand);
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+
+.ticketConnectorTrack {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.5));
+}
+
+.ticketPlane {
+  font-size: 1.1rem;
+  color: var(--brand);
+  flex-shrink: 0;
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
+}
+
+.ticketDuration {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  color: var(--brand);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.04em;
+  text-align: center;
+  opacity: 0.85;
+}
+
+@media (max-width: 480px) {
+  .ticketConnectorLine {
+    display: none;
+  }
+}
+
+/* ── Block time field (inside ticket) ────────────────────────────────────── */
+
+.blockField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.blockField label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.blockField input {
+  text-align: center;
+  padding: var(--sp-2) var(--sp-2);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r);
+  color: var(--text-1);
+  font-size: var(--text-sm);
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+}
+
+.blockField input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--brand-light);
+}
+
+.blockField input::placeholder {
+  color: var(--text-3);
+}
+
+/* ── Field layout (shared) ────────────────────────────────────────────────── */
 
 .fieldRow {
   display: flex;
@@ -46,17 +416,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--sp-1);
-  min-width: 120px;
-  flex: 1 1 120px;
-}
-
-.fieldGrow {
-  flex: 2 1 160px;
-}
-
-.fieldNarrow {
-  flex: 0 1 90px;
-  min-width: 70px;
+  min-width: 110px;
+  flex: 1 1 110px;
 }
 
 .fieldFull {
@@ -69,28 +430,34 @@
   font-size: var(--text-xs);
   font-weight: 600;
   color: var(--text-2);
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .field input,
 .field select,
-
 .field textarea {
   padding: var(--sp-2) var(--sp-3);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-input);
   border-radius: var(--r);
   font-size: var(--text-sm);
   color: var(--text-1);
-  background: var(--surface);
   outline: none;
   transition: border-color var(--duration) var(--ease),
-              box-shadow var(--duration) var(--ease);
+              box-shadow var(--duration) var(--ease),
+              background var(--duration) var(--ease);
+}
+
+.field select option {
+  background: var(--select-bg);
+  color: var(--text-1);
 }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
   border-color: var(--border-focus);
+  background: rgba(56, 189, 248, 0.04);
   box-shadow: 0 0 0 3px var(--brand-light);
 }
 
@@ -102,27 +469,6 @@
 .field textarea {
   resize: vertical;
   line-height: 1.5;
-}
-
-/* ── Block times row ─────────────────────────────────────────────────────── */
-
-.blockRow {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--sp-2);
-  margin-bottom: var(--sp-5);
-}
-
-.blockRow .field {
-  flex: 0 1 110px;
-  min-width: unset;
-}
-
-.blockSep {
-  color: var(--text-3);
-  font-size: var(--text-sm);
-  padding-bottom: calc(var(--sp-2) + 2px);
-  flex-shrink: 0;
 }
 
 /* ── Primary time fields (Total + PIC) ───────────────────────────────────── */
@@ -151,6 +497,11 @@
   align-items: center;
   gap: var(--sp-2);
   padding: var(--sp-2) 0;
+  transition: color var(--duration) var(--ease);
+}
+
+.timeDetailsSummary:hover {
+  color: var(--brand);
 }
 
 .timeDetailsSummary::before {
@@ -188,7 +539,6 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
-/* Hide spinner on number inputs in time grid */
 .timeGrid .field input[type=number]::-webkit-outer-spin-button,
 .timeGrid .field input[type=number]::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -200,84 +550,15 @@
   appearance: textfield;
 }
 
-/* ── Inline aircraft sub-form ─────────────────────────────────────────────── */
-
-.subForm {
-  margin-top: var(--sp-5);
-  padding: var(--sp-4);
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-}
-
-.subFormTitle {
-  font-size: var(--text-xs);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-3);
-  margin: 0 0 var(--sp-4) 0;
-}
-
-.addAircraftBtn {
-  margin-top: var(--sp-4);
-  padding: var(--sp-2) var(--sp-5);
-  background: var(--brand);
-  color: #fff;
-  border: none;
-  border-radius: var(--r);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  transition: background var(--duration) var(--ease),
-              transform var(--duration) var(--ease);
-}
-
-.addAircraftBtn:hover {
-  background: var(--brand-hover);
-  transform: translateY(-1px);
-}
-
-.addAircraftBtn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ── Checkboxes ───────────────────────────────────────────────────────────── */
-
-.checkRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-5);
-  margin: var(--sp-4) 0;
-}
-
-.checkLabel {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  font-size: var(--text-sm);
-  color: var(--text-2);
-  cursor: pointer;
-  user-select: none;
-}
-
-.checkLabel input[type=checkbox] {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--brand);
-  cursor: pointer;
-}
-
 /* ── Actions ──────────────────────────────────────────────────────────────── */
 
 .actions {
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
   align-items: center;
   gap: var(--sp-3);
   margin-top: var(--sp-2);
-  padding-bottom: var(--sp-2);
+  padding-bottom: var(--sp-4);
 }
 
 .actionsBtns {
@@ -287,43 +568,46 @@
 
 .cancelBtn {
   padding: var(--sp-2) var(--sp-5);
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border-input);
   border-radius: var(--r);
   font-size: var(--text-sm);
   font-weight: 500;
   color: var(--text-2);
   transition: background var(--duration) var(--ease),
-              border-color var(--duration) var(--ease);
+              border-color var(--duration) var(--ease),
+              color var(--duration) var(--ease);
 }
 
 .cancelBtn:hover {
-  background: var(--surface-2);
-  border-color: var(--text-3);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--text-1);
 }
 
 .submitBtn {
-  padding: var(--sp-2) var(--sp-6);
+  padding: var(--sp-2) var(--sp-7, 1.75rem);
   background: var(--brand);
-  color: #fff;
+  color: var(--brand-text);
   border: none;
   border-radius: var(--r);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   transition: background var(--duration) var(--ease),
               transform var(--duration) var(--ease),
               box-shadow var(--duration) var(--ease);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
 }
 
 .submitBtn:hover:not(:disabled) {
   background: var(--brand-hover);
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
 }
 
 .submitBtn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;

@@ -1,44 +1,130 @@
-.page h2 {
-  margin-bottom: 1rem;
+.page {
+  max-width: 900px;
 }
 
+.pageTitle {
+  margin-bottom: var(--sp-8);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.empty {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+
+/* ── Group ────────────────────────────────────────────────────────────────── */
+
 .group {
-  margin-bottom: 1.75rem;
+  margin-bottom: var(--sp-10);
 }
 
 .groupTitle {
-  font-size: 1rem;
+  font-size: var(--text-xs);
   font-weight: 700;
-  margin: 0 0 0.5rem;
-  padding-bottom: 0.25rem;
-  border-bottom: 2px solid #1a5276;
-  color: #1a5276;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--brand);
+  margin: 0 0 var(--sp-4) 0;
+  opacity: 0.75;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
+/* ── Bento grid ───────────────────────────────────────────────────────────── */
+
+.bentoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--sp-4);
 }
 
-th, td {
-  padding: 0.4rem 0.6rem;
-  text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+/* ── Bento card ───────────────────────────────────────────────────────────── */
+
+.bentoCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-5) var(--sp-5) var(--sp-6);
+  background: var(--surface);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow), var(--shadow-inset);
+  transition: transform var(--duration) var(--ease),
+              box-shadow var(--duration) var(--ease);
+  position: relative;
+  overflow: hidden;
 }
 
-th {
-  background: #f7f7f7;
+.bentoCard::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+}
+
+.bentoCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.bentoLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--text-xs);
   font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
-td.val {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  width: 8rem;
+.bentoSub {
+  font-size: 0.65rem;
+  color: var(--text-3);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
 }
 
-td.sub {
-  color: #666;
-  font-size: 0.8rem;
+.bentoValue {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: -0.02em;
+  color: var(--text-1);
+  line-height: 1.2;
+  margin-top: auto;
+}
+
+/* ── Type-specific accent colors ──────────────────────────────────────────── */
+
+.typeTime::before {
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+}
+
+.typeTime .bentoValue {
+  color: var(--val-time);
+}
+
+.typeCurrency::before {
+  background: linear-gradient(90deg, #34d399, #10b981);
+}
+
+.typeCurrency .bentoValue {
+  color: var(--val-currency);
+}
+
+.typeInteger::before {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.typeInteger .bentoValue {
+  color: var(--val-integer);
+}
+
+.typeDecimal::before {
+  background: linear-gradient(90deg, #94a3b8, #64748b);
 }

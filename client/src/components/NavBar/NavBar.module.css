@@ -12,33 +12,33 @@
 }
 
 .link {
-  color: rgba(255, 255, 255, 0.75);
+  color: var(--nav-link);
   text-decoration: none;
   font-size: var(--text-sm);
   font-weight: 500;
-  padding: var(--sp-2) var(--sp-3);
-  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-4);
+  border-radius: var(--r);
   white-space: nowrap;
   transition: color var(--duration) var(--ease), background var(--duration) var(--ease);
 }
 
 .link:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--nav-link-hover);
+  background: var(--nav-link-hover-bg);
   text-decoration: none;
 }
 
 .link.active {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.15);
+  color: var(--nav-link-active);
+  background: var(--nav-link-active-bg);
 }
 
 .logoutBtn {
   margin-left: auto;
   flex-shrink: 0;
   background: transparent;
-  color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--nav-logout);
+  border: 1px solid var(--nav-logout-border);
   border-radius: var(--r-sm);
   padding: var(--sp-1) var(--sp-3);
   font-size: var(--text-sm);
@@ -49,7 +49,7 @@
 }
 
 .logoutBtn:hover {
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.1);
+  color: var(--nav-logout-hover);
+  border-color: var(--nav-logout-hover-border);
+  background: var(--nav-logout-hover-bg);
 }

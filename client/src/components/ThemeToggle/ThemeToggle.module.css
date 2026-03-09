@@ -1,0 +1,35 @@
+.toggle {
+  display: flex;
+  align-items: center;
+  background: rgba(128, 128, 128, 0.12);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 2px;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: calc(var(--r) - 2px);
+  background: transparent;
+  color: var(--nav-link);
+  transition:
+    background var(--duration) var(--ease),
+    color var(--duration) var(--ease);
+}
+
+.btn:hover {
+  background: var(--nav-link-hover-bg);
+  color: var(--nav-link-hover);
+}
+
+.btn.active {
+  background: var(--brand);
+  color: var(--brand-text);
+}

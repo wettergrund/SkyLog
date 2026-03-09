@@ -72,9 +72,9 @@ export default function NewFlightPage() {
   const [landings, setLandings] = useState('');
   const [fullStopLandings, setFullStopLandings] = useState('');
   const [nightLandings, setNightLandings] = useState('');
-  const [holdingProcedures, setHoldingProcedures] = useState(false);
+  const [holdingProcedures] = useState(false);
   const [comment, setComment] = useState('');
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic] = useState(false);
 
   // ── New aircraft sub-form state ───────────────────────────────────────────
   const [tailNumber, setTailNumber] = useState('');
@@ -161,72 +161,45 @@ export default function NewFlightPage() {
 
   return (
     <div className={styles.page}>
-      <h2>Log a Flight</h2>
+      <h2 className={styles.pageTitle}>Log a Flight</h2>
 
       <form onSubmit={handleSubmit} noValidate>
 
-        {/* ── Section 1: Flight basics ─────────────────────────────────────── */}
+        {/* ── Section 1: Aircraft picker ───────────────────────────────────── */}
         <section className={styles.card}>
-          <h3 className={styles.cardTitle}>Flight Basics</h3>
+          <h3 className={styles.cardTitle}>Aircraft</h3>
 
-          <div className={styles.fieldRow}>
-            <div className={styles.field}>
-              <label htmlFor="date">Date *</label>
-              <input
-                id="date"
-                type="date"
-                required
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
-            </div>
-
-            <div className={`${styles.field} ${styles.fieldGrow}`}>
-              <label htmlFor="aircraft">Aircraft *</label>
-              <select
-                id="aircraft"
-                required
-                value={selectedAircraftId}
-                onChange={(e) => setSelectedAircraftId(e.target.value)}
-                disabled={aircraftLoading}
+          {aircraftLoading ? (
+            <div className={styles.aircraftLoading}>Loading aircraft…</div>
+          ) : (
+            <div className={styles.aircraftGrid}>
+              {aircraftList?.map((ac) => (
+                <button
+                  key={ac.aircraftId}
+                  type="button"
+                  className={`${styles.aircraftCard} ${selectedAircraftId === String(ac.aircraftId) ? styles.aircraftCardSelected : ''}`}
+                  onClick={() => setSelectedAircraftId(String(ac.aircraftId))}
+                >
+                  <span className={styles.aircraftTail}>{ac.tailNumber}</span>
+                  <span className={styles.aircraftModel}>{ac.model || ac.manufacturer}</span>
+                  <span className={styles.aircraftCategory}>{ac.categoryClass}</span>
+                </button>
+              ))}
+              <button
+                type="button"
+                className={`${styles.aircraftCard} ${styles.aircraftCardAdd} ${selectedAircraftId === NEW_AIRCRAFT_SENTINEL ? styles.aircraftCardSelected : ''}`}
+                onClick={() => setSelectedAircraftId(NEW_AIRCRAFT_SENTINEL)}
               >
-                <option value="">-- Select aircraft --</option>
-                {aircraftList?.map((ac) => (
-                  <option key={ac.aircraftId} value={String(ac.aircraftId)}>
-                    {ac.tailNumber}{ac.model ? ` — ${ac.model}` : ''}
-                  </option>
-                ))}
-                <option value={NEW_AIRCRAFT_SENTINEL}>+ New aircraft</option>
-              </select>
+                <span className={styles.aircraftAddIcon}>+</span>
+                <span className={styles.aircraftAddLabel}>New Aircraft</span>
+              </button>
             </div>
-
-            <div className={`${styles.field} ${styles.fieldNarrow}`}>
-              <label htmlFor="from">From</label>
-              <input
-                id="from"
-                type="text"
-                placeholder="ESOW"
-                value={from}
-                onChange={(e) => setFrom(e.target.value)}
-              />
-            </div>
-
-            <div className={`${styles.field} ${styles.fieldNarrow}`}>
-              <label htmlFor="to">To</label>
-              <input
-                id="to"
-                type="text"
-                placeholder="ESSA"
-                value={to}
-                onChange={(e) => setTo(e.target.value)}
-              />
-            </div>
-          </div>
+          )}
 
           {/* Inline new aircraft sub-form */}
           {showNewAircraftForm && (
             <div className={styles.subForm}>
-              <h4 className={styles.subFormTitle}>New Aircraft</h4>
+              <h4 className={styles.subFormTitle}>Add New Aircraft</h4>
 
               {aircraftError && <ErrorMessage message={aircraftError} />}
 
@@ -236,7 +209,7 @@ export default function NewFlightPage() {
                   <input
                     id="tailNumber"
                     type="text"
-                    placeholder="N12345"
+                    placeholder="SE-ABC"
                     value={tailNumber}
                     onChange={(e) => setTailNumber(e.target.value)}
                   />
@@ -271,7 +244,7 @@ export default function NewFlightPage() {
                     value={categoryClassId}
                     onChange={(e) => setCategoryClassId(e.target.value)}
                   >
-                    <option value="">-- Select --</option>
+                    <option value="">— Select —</option>
                     {categoryClasses?.map((cc) => (
                       <option key={cc.id} value={String(cc.id)}>
                         {cc.catClass}
@@ -308,15 +281,72 @@ export default function NewFlightPage() {
           )}
         </section>
 
-        {/* ── Section 2: Flight times ──────────────────────────────────────── */}
+        {/* ── Section 2: Airline-ticket route card ─────────────────────────── */}
+        <section className={styles.ticket}>
+          <div className={styles.ticketDate}>
+            <label htmlFor="date" className={styles.ticketMetaLabel}>Date</label>
+            <input
+              id="date"
+              type="date"
+              className={styles.ticketDateInput}
+              required
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </div>
+
+          <div className={styles.ticketBody}>
+            {/* Departure */}
+            <div className={styles.ticketAirport}>
+              <input
+                className={styles.ticketIcao}
+                type="text"
+                placeholder="ICAO"
+                maxLength={6}
+                value={from}
+                onChange={(e) => setFrom(e.target.value.toUpperCase())}
+              />
+              <span className={styles.ticketAirportLabel}>Departure</span>
+              <div className={styles.ticketBlockTime}>
+                <BlockTimeField id="blockOff" label="Block off" value={blockOff} onChange={setBlockOff} />
+              </div>
+            </div>
+
+            {/* Center connector */}
+            <div className={styles.ticketConnector}>
+              <div className={styles.ticketConnectorLine}>
+                <div className={styles.ticketConnectorDot} />
+                <div className={styles.ticketConnectorTrack} />
+                <span className={styles.ticketPlane}>✈</span>
+                <div className={styles.ticketConnectorTrack} />
+                <div className={styles.ticketConnectorDot} />
+              </div>
+              {totalFlightTime && (
+                <span className={styles.ticketDuration}>{totalFlightTime} h</span>
+              )}
+            </div>
+
+            {/* Arrival */}
+            <div className={styles.ticketAirport}>
+              <input
+                className={styles.ticketIcao}
+                type="text"
+                placeholder="ICAO"
+                maxLength={6}
+                value={to}
+                onChange={(e) => setTo(e.target.value.toUpperCase())}
+              />
+              <span className={styles.ticketAirportLabel}>Arrival</span>
+              <div className={styles.ticketBlockTime}>
+                <BlockTimeField id="blockOn" label="Block on" value={blockOn} onChange={setBlockOn} />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Section 3: Flight times ──────────────────────────────────────── */}
         <section className={styles.card}>
           <h3 className={styles.cardTitle}>Flight Times</h3>
-
-          <div className={styles.blockRow}>
-            <BlockTimeField id="blockOff" label="Block Off" value={blockOff} onChange={setBlockOff} />
-            <span className={styles.blockSep}>→</span>
-            <BlockTimeField id="blockOn" label="Block On" value={blockOn} onChange={setBlockOn} />
-          </div>
 
           <div className={styles.timePrimary}>
             <TimeField id="totalFlightTime" label="Total *" value={totalFlightTime} onChange={setTotalFlightTime} />
@@ -338,7 +368,7 @@ export default function NewFlightPage() {
           </details>
         </section>
 
-        {/* ── Section 3: Landings ──────────────────────────────────────────── */}
+        {/* ── Section 4: Landings ──────────────────────────────────────────── */}
         <section className={styles.card}>
           <h3 className={styles.cardTitle}>Landings</h3>
 
@@ -348,20 +378,9 @@ export default function NewFlightPage() {
             <IntField id="nightLandings" label="Night Ldg"  value={nightLandings}    onChange={setNightLandings} />
             <IntField id="approaches"    label="Approaches" value={approaches}       onChange={setApproaches} />
           </div>
-
-          {/* <div className={styles.checkRow}>
-            <label className={styles.checkLabel}>
-              <input
-                type="checkbox"
-                checked={holdingProcedures}
-                onChange={(e) => setHoldingProcedures(e.target.checked)}
-              />
-              Holding Procedures
-            </label>
-          </div> */}
         </section>
 
-        {/* ── Comment ──────────────────────────────────────────────────────── */}
+        {/* ── Notes ────────────────────────────────────────────────────────── */}
         <div className={`${styles.field} ${styles.fieldFull}`}>
           <label htmlFor="comment">Notes</label>
           <textarea
@@ -384,14 +403,6 @@ export default function NewFlightPage() {
         )}
 
         <div className={styles.actions}>
-          {/* <label className={styles.checkLabel}>
-            <input
-              type="checkbox"
-              checked={isPublic}
-              onChange={(e) => setIsPublic(e.target.checked)}
-            />
-            Public flight
-          </label> */}
           <div className={styles.actionsBtns}>
             <button type="button" className={styles.cancelBtn} onClick={() => navigate('/logbook')}>
               Cancel
@@ -435,7 +446,6 @@ function TimeField({ id, label, value, onChange }: FieldProps) {
 function BlockTimeField({ id, label, value, onChange }: FieldProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     let raw = e.target.value.replace(/[^\d:]/g, '');
-    // Auto-insert colon after two digits
     if (!raw.includes(':') && raw.length >= 2) {
       raw = raw.slice(0, 2) + ':' + raw.slice(2);
     }
@@ -444,7 +454,7 @@ function BlockTimeField({ id, label, value, onChange }: FieldProps) {
   }
 
   return (
-    <div className={styles.field}>
+    <div className={styles.blockField}>
       <label htmlFor={id}>{label}</label>
       <input
         id={id}
