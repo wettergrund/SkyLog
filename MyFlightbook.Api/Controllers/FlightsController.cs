@@ -141,6 +141,58 @@ public class FlightsController : ApiControllerBase
         return ApiOk(ToDto(flight));
     }
 
+    // ── PUT /api/v1/flights/{id} ──────────────────────────────────────────────
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateFlight(int id, [FromBody] UpdateFlightRequest request)
+    {
+        var user = await CurrentUserAsync();
+
+        var ua = await _db.UserAircraft
+            .FirstOrDefaultAsync(x => x.AppUserId == user.Id && x.AircraftId == request.AircraftId);
+
+        if (ua is null)
+            return ApiError("Aircraft not found in your hangar.", HttpStatusCode.NotFound);
+
+        var flight = await _db.Flights
+            .FirstOrDefaultAsync(f => f.Id == id && f.AppUserId == user.Id);
+
+        if (flight is null)
+            return ApiError("Flight not found.", HttpStatusCode.NotFound);
+
+        flight.AircraftId       = request.AircraftId;
+        flight.Date             = request.Date;
+        flight.To               = request.To ?? string.Empty;
+        flight.From             = request.From ?? string.Empty;
+        flight.Route            = request.Route ?? string.Empty;
+        flight.Comment          = request.Comment ?? string.Empty;
+        flight.TotalFlightTime  = request.TotalFlightTime;
+        flight.PIC              = request.PIC ?? 0;
+        flight.SIC              = request.SIC ?? 0;
+        flight.Dual             = request.Dual ?? 0;
+        flight.CFI              = request.CFI ?? 0;
+        flight.CrossCountry     = request.CrossCountry ?? 0;
+        flight.Nighttime        = request.Nighttime ?? 0;
+        flight.IMC              = request.IMC ?? 0;
+        flight.SimulatedIFR     = request.SimulatedIFR ?? 0;
+        flight.GroundSim        = request.GroundSim ?? 0;
+        flight.Approaches       = request.Approaches ?? 0;
+        flight.Landings         = request.Landings ?? 0;
+        flight.FullStopLandings = request.FullStopLandings ?? 0;
+        flight.NightLandings    = request.NightLandings ?? 0;
+        flight.HoldingProcedures = request.HoldingProcedures ?? false;
+        flight.IsPublic         = request.IsPublic ?? false;
+        flight.HobbsStart       = request.HobbsStart;
+        flight.HobbsEnd         = request.HobbsEnd;
+
+        await _db.SaveChangesAsync();
+
+        await _db.Entry(flight).Reference(f => f.Aircraft).LoadAsync();
+        await _db.Entry(flight.Aircraft).Reference(a => a.MakeModel).LoadAsync();
+
+        return ApiOk(ToDto(flight));
+    }
+
     // ── DELETE /api/v1/flights/{id} ───────────────────────────────────────────
 
     [HttpDelete("{id:int}")]
@@ -232,6 +284,32 @@ public class FlightsController : ApiControllerBase
 public record BatchDeleteRequest(int[] Ids);
 
 public record CreateFlightRequest(
+    DateTime Date,
+    int AircraftId,
+    string? Route,
+    string? From,
+    string? To,
+    string? Comment,
+    decimal TotalFlightTime,
+    decimal? PIC,
+    decimal? SIC,
+    decimal? Dual,
+    decimal? CFI,
+    decimal? CrossCountry,
+    decimal? Nighttime,
+    decimal? IMC,
+    decimal? SimulatedIFR,
+    decimal? GroundSim,
+    int? Approaches,
+    int? Landings,
+    int? FullStopLandings,
+    int? NightLandings,
+    bool? HoldingProcedures,
+    bool? IsPublic,
+    decimal? HobbsStart,
+    decimal? HobbsEnd);
+
+public record UpdateFlightRequest(
     DateTime Date,
     int AircraftId,
     string? Route,

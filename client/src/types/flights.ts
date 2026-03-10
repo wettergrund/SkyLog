@@ -7,7 +7,7 @@ export interface CustomProperty {
 export interface Flight {
   id: number;
   date: string;
-  aircraftID: number;
+  aircraftId: number;
   tailNumber: string;
   modelDisplay: string;
 
@@ -57,6 +57,12 @@ export interface FlightQueryParams {
   sortKey?: string;
   sortDir?: SortDirection;
   fq?: string;
+}
+
+export interface ImportResult {
+  imported: number;
+  skipped: number;
+  errors: string[];
 }
 
 export interface CreateFlightRequest {

@@ -1,5 +1,5 @@
 import { apiFetch } from './client';
-import type { AircraftSummary, CategoryClassItem, CreateAircraftRequest } from '../types/aircraft';
+import type { AircraftSummary, CategoryClassItem, CreateAircraftRequest, UpdateAircraftRequest } from '../types/aircraft';
 
 export function getAircraft(): Promise<AircraftSummary[]> {
   return apiFetch<AircraftSummary[]>('/api/v1/aircraft');
@@ -12,6 +12,13 @@ export function getCategoryClasses(): Promise<CategoryClassItem[]> {
 export function createAircraft(request: CreateAircraftRequest): Promise<AircraftSummary> {
   return apiFetch<AircraftSummary>('/api/v1/aircraft', {
     method: 'POST',
+    body: JSON.stringify(request),
+  });
+}
+
+export function updateAircraft(id: number, request: UpdateAircraftRequest): Promise<AircraftSummary> {
+  return apiFetch<AircraftSummary>(`/api/v1/aircraft/${id}`, {
+    method: 'PUT',
     body: JSON.stringify(request),
   });
 }

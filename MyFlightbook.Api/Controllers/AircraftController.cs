@@ -140,6 +140,55 @@ public class AircraftController : ApiControllerBase
         return ApiOk(ToDto(ua));
     }
 
+    // ── PUT /api/v1/aircraft/{id} ─────────────────────────────────────────────
+
+    [HttpPut("{id:int}")]
+    public async Task<IActionResult> UpdateAircraft(int id, [FromBody] UpdateAircraftRequest request)
+    {
+        var user = await CurrentUserAsync();
+
+        var ua = await _db.UserAircraft
+            .Where(x => x.AppUserId == user.Id && x.AircraftId == id)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel)
+            .FirstOrDefaultAsync();
+
+        if (ua is null)
+            return ApiError("Aircraft not found in your hangar.", HttpStatusCode.NotFound);
+
+        // Find or create the manufacturer
+        var manufacturerName = request.ManufacturerName.Trim();
+        var manufacturer = await _db.Manufacturers
+            .FirstOrDefaultAsync(m => m.ManufacturerName.ToLower() == manufacturerName.ToLower());
+
+        if (manufacturer is null)
+        {
+            manufacturer = new Manufacturer { ManufacturerName = manufacturerName };
+            _db.Manufacturers.Add(manufacturer);
+            await _db.SaveChangesAsync();
+        }
+
+        // Update the MakeModel in-place
+        var makeModel = ua.Aircraft.MakeModel;
+        makeModel.ManufacturerId  = manufacturer.Id;
+        makeModel.CategoryClassId = request.CategoryClassId;
+        makeModel.Model           = request.ModelName.Trim();
+
+        // Update instance type
+        if (Enum.TryParse<AircraftInstanceType>(request.InstanceType, out var instanceType))
+            ua.Aircraft.InstanceType = instanceType;
+
+        await _db.SaveChangesAsync();
+
+        // Reload with navigation properties for the DTO
+        ua = await _db.UserAircraft
+            .Where(x => x.AppUserId == user.Id && x.AircraftId == id)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.Manufacturer)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.CategoryClass)
+            .FirstAsync();
+
+        return ApiOk(ToDto(ua));
+    }
+
     // ── DELETE /api/v1/aircraft/{id} ──────────────────────────────────────────
 
     [HttpDelete("{id:int}")]
@@ -172,6 +221,7 @@ public class AircraftController : ApiControllerBase
             tailNumber         = ac?.TailNumber,
             instanceType       = ac?.InstanceType.ToString(),
             makeModelId        = mm?.Id,
+            categoryClassId    = mm?.CategoryClassId,
             model              = mm?.Model,
             modelName          = mm?.ModelName,
             typeName           = mm?.TypeName,
@@ -206,6 +256,12 @@ public class AircraftController : ApiControllerBase
         };
     }
 }
+
+public record UpdateAircraftRequest(
+    string ManufacturerName,
+    string ModelName,
+    int CategoryClassId,
+    string? InstanceType);
 
 public record CreateAircraftRequest(
     string TailNumber,

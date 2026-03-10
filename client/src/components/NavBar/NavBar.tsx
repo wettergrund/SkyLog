@@ -1,21 +1,7 @@
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useQueryClient } from '@tanstack/react-query';
-import { logout } from '../../api/auth';
+import { NavLink } from 'react-router-dom';
 import styles from './NavBar.module.css';
 
 export default function NavBar() {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-
-  async function handleLogout() {
-    try {
-      await logout();
-    } finally {
-      queryClient.clear();
-      navigate('/login', { replace: true });
-    }
-  }
-
   return (
     <nav className={styles.nav}>
       <NavLink
@@ -50,18 +36,6 @@ export default function NavBar() {
       >
         Log Flight
       </NavLink>
-            <NavLink
-            
-        to="/flights/new"
-        className={({ isActive }) =>
-          `${styles.link}${isActive ? ` ${styles.active}` : ''}`
-        }
-      >
-        Admin
-      </NavLink>
-      <button className={styles.logoutBtn} onClick={handleLogout}>
-        Sign out
-      </button>
     </nav>
   );
 }

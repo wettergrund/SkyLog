@@ -3,11 +3,19 @@ export interface AircraftSummary {
   tailNumber: string;
   instanceType: string;
   makeModelId: number;
+  categoryClassId: number;
   model: string;
   modelName: string | null;
   typeName: string | null;
   manufacturer: string;
   categoryClass: string;
+}
+
+export interface UpdateAircraftRequest {
+  manufacturerName: string;
+  modelName: string;
+  categoryClassId: number;
+  instanceType?: string;
 }
 
 export interface CategoryClassItem {

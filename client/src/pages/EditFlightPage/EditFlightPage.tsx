@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { useAircraft } from '../../hooks/useAircraft';
-import { useCreateAircraft } from '../../hooks/useCreateAircraft';
+import { useGetFlight } from '../../hooks/useGetFlight';
+import { useUpdateFlight } from '../../hooks/useUpdateFlight';
 import { useUpdateAircraft } from '../../hooks/useUpdateAircraft';
-import { useCreateFlight } from '../../hooks/useCreateFlight';
-
+import { useAircraft } from '../../hooks/useAircraft';
 import { getCategoryClasses } from '../../api/aircraft';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import AirportInput from '../../components/AirportInput/AirportInput';
-import styles from './NewFlightPage.module.css';
+import styles from '../NewFlightPage/NewFlightPage.module.css';
 
-const NEW_AIRCRAFT_SENTINEL = '__new__';
+const INSTANCE_TYPES = [
+  { value: 'RealAircraft',         label: 'Real Aircraft' },
+  { value: 'UncertifiedSimulator', label: 'Uncertified Simulator' },
+  { value: 'CertifiedATD',         label: 'Certified ATD' },
+  { value: 'CertifiedFTD',         label: 'Certified FTD' },
+  { value: 'CertifiedSim',         label: 'Certified Sim' },
+];
 
 function PencilIcon() {
   return (
@@ -23,55 +29,29 @@ function PencilIcon() {
   );
 }
 
-const INSTANCE_TYPES = [
-  { value: 'RealAircraft', label: 'Real Aircraft' },
-  { value: 'UncertifiedSimulator', label: 'Uncertified Simulator' },
-  { value: 'CertifiedATD', label: 'Certified ATD' },
-  { value: 'CertifiedFTD', label: 'Certified FTD' },
-  { value: 'CertifiedSim', label: 'Certified Sim' },
-];
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-export default function NewFlightPage() {
+export default function EditFlightPage() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const flightId = Number(id);
 
-  // ── Aircraft data ─────────────────────────────────────────────────────────
-  const { data: aircraftList, isLoading: aircraftLoading } = useAircraft();
+  const { data: flight, isLoading, isError } = useGetFlight(flightId);
+  const { data: aircraftList } = useAircraft();
   const { data: categoryClasses } = useQuery({
     queryKey: ['categoryClasses'],
     queryFn: getCategoryClasses,
     staleTime: 10 * 60 * 1000,
   });
-
-  // ── Mutations ─────────────────────────────────────────────────────────────
-  const createAircraftMutation = useCreateAircraft();
+  const updateFlightMutation = useUpdateFlight();
   const updateAircraftMutation = useUpdateAircraft();
-  const createFlightMutation = useCreateFlight();
 
   // ── Flight form state ─────────────────────────────────────────────────────
-  const [date, setDate] = useState(todayIso());
+  const [date, setDate] = useState('');
   const [blockOff, setBlockOff] = useState('');
   const [blockOn, setBlockOn] = useState('');
   const [selectedAircraftId, setSelectedAircraftId] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [totalFlightTime, setTotalFlightTime] = useState('');
-
-  // ── Auto-calculate total from block times ────────────────────────────────
-  useEffect(() => {
-    const offMatch = blockOff.match(/^(\d{1,2}):(\d{2})$/);
-    const onMatch  = blockOn.match(/^(\d{1,2}):(\d{2})$/);
-    if (!offMatch || !onMatch) return;
-    let diffMin =
-      (Number(onMatch[1]) * 60 + Number(onMatch[2])) -
-      (Number(offMatch[1]) * 60 + Number(offMatch[2]));
-    if (diffMin < 0) diffMin += 24 * 60; // overnight
-    setTotalFlightTime((diffMin / 60).toFixed(1));
-  }, [blockOff, blockOn]);
-
   const [pic, setPic] = useState('');
   const [sic, setSic] = useState('');
   const [dual, setDual] = useState('');
@@ -85,19 +65,33 @@ export default function NewFlightPage() {
   const [landings, setLandings] = useState('');
   const [fullStopLandings, setFullStopLandings] = useState('');
   const [nightLandings, setNightLandings] = useState('');
-  const [holdingProcedures] = useState(false);
   const [comment, setComment] = useState('');
-  const [isPublic] = useState(false);
 
-  // ── New aircraft sub-form state ───────────────────────────────────────────
-  const [tailNumber, setTailNumber] = useState('');
-  const [manufacturerName, setManufacturerName] = useState('');
-  const [modelName, setModelName] = useState('');
-  const [categoryClassId, setCategoryClassId] = useState('');
-  const [instanceType, setInstanceType] = useState('RealAircraft');
-  const [aircraftError, setAircraftError] = useState('');
-
-  const showNewAircraftForm = selectedAircraftId === NEW_AIRCRAFT_SENTINEL;
+  // ── Pre-populate fields once flight is loaded ─────────────────────────────
+  const [populated, setPopulated] = useState(false);
+  useEffect(() => {
+    if (!flight || populated) return;
+    setDate(flight.date.slice(0, 10));
+    setSelectedAircraftId(String(flight.aircraftId));
+    setFrom(flight.from ?? '');
+    setTo(flight.to ?? '');
+    setTotalFlightTime(flight.totalFlightTime > 0 ? String(flight.totalFlightTime) : '');
+    setPic(flight.pic > 0 ? String(flight.pic) : '');
+    setSic(flight.sic > 0 ? String(flight.sic) : '');
+    setDual(flight.dual > 0 ? String(flight.dual) : '');
+    setCfi(flight.cfi > 0 ? String(flight.cfi) : '');
+    setCrossCountry(flight.crossCountry > 0 ? String(flight.crossCountry) : '');
+    setNighttime(flight.nighttime > 0 ? String(flight.nighttime) : '');
+    setImc(flight.imc > 0 ? String(flight.imc) : '');
+    setSimulatedIFR(flight.simulatedIFR > 0 ? String(flight.simulatedIFR) : '');
+    setGroundSim(flight.groundSim > 0 ? String(flight.groundSim) : '');
+    setApproaches(flight.approaches > 0 ? String(flight.approaches) : '');
+    setLandings(flight.landings > 0 ? String(flight.landings) : '');
+    setFullStopLandings(flight.fullStopLandings > 0 ? String(flight.fullStopLandings) : '');
+    setNightLandings(flight.nightLandings > 0 ? String(flight.nightLandings) : '');
+    setComment(flight.comment ?? '');
+    setPopulated(true);
+  }, [flight, populated]);
 
   // ── Edit aircraft sub-form state ──────────────────────────────────────────
   const [editingAircraftId, setEditingAircraftId] = useState<number | null>(null);
@@ -117,36 +111,6 @@ export default function NewFlightPage() {
     setEditInstanceType(ac.instanceType ?? 'RealAircraft');
     setEditError('');
   }, [editingAircraftId, aircraftList]);
-
-  // ── Handlers ──────────────────────────────────────────────────────────────
-
-  async function handleAddAircraft(e: React.FormEvent) {
-    e.preventDefault();
-    setAircraftError('');
-
-    if (!tailNumber.trim() || !manufacturerName.trim() || !modelName.trim() || !categoryClassId) {
-      setAircraftError('All aircraft fields are required.');
-      return;
-    }
-
-    try {
-      const aircraft = await createAircraftMutation.mutateAsync({
-        tailNumber,
-        manufacturerName,
-        modelName,
-        categoryClassId: Number(categoryClassId),
-        instanceType,
-      });
-      setSelectedAircraftId(String(aircraft.aircraftId));
-      setTailNumber('');
-      setManufacturerName('');
-      setModelName('');
-      setCategoryClassId('');
-      setInstanceType('RealAircraft');
-    } catch (err) {
-      setAircraftError(err instanceof Error ? err.message : 'Failed to add aircraft.');
-    }
-  }
 
   async function handleUpdateAircraft() {
     setEditError('');
@@ -170,6 +134,18 @@ export default function NewFlightPage() {
     }
   }
 
+  // ── Auto-calculate total from block times ─────────────────────────────────
+  useEffect(() => {
+    const offMatch = blockOff.match(/^(\d{1,2}):(\d{2})$/);
+    const onMatch  = blockOn.match(/^(\d{1,2}):(\d{2})$/);
+    if (!offMatch || !onMatch) return;
+    let diffMin =
+      (Number(onMatch[1]) * 60 + Number(onMatch[2])) -
+      (Number(offMatch[1]) * 60 + Number(offMatch[2]));
+    if (diffMin < 0) diffMin += 24 * 60;
+    setTotalFlightTime((diffMin / 60).toFixed(1));
+  }, [blockOff, blockOn]);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -177,89 +153,78 @@ export default function NewFlightPage() {
     if (!aircraftId || !date || !totalFlightTime) return;
 
     try {
-      await createFlightMutation.mutateAsync({
-        date,
-        aircraftId,
-        from: from || undefined,
-        to: to || undefined,
-        comment: comment || undefined,
-        totalFlightTime: Number(totalFlightTime),
-        pic: pic ? Number(pic) : undefined,
-        sic: sic ? Number(sic) : undefined,
-        dual: dual ? Number(dual) : undefined,
-        cfi: cfi ? Number(cfi) : undefined,
-        crossCountry: crossCountry ? Number(crossCountry) : undefined,
-        nighttime: nighttime ? Number(nighttime) : undefined,
-        imc: imc ? Number(imc) : undefined,
-        simulatedIFR: simulatedIFR ? Number(simulatedIFR) : undefined,
-        groundSim: groundSim ? Number(groundSim) : undefined,
-        approaches: approaches ? Number(approaches) : undefined,
-        landings: landings ? Number(landings) : undefined,
-        fullStopLandings: fullStopLandings ? Number(fullStopLandings) : undefined,
-        nightLandings: nightLandings ? Number(nightLandings) : undefined,
-        holdingProcedures: holdingProcedures || undefined,
-        isPublic: isPublic || undefined,
+      await updateFlightMutation.mutateAsync({
+        id: flightId,
+        data: {
+          date,
+          aircraftId,
+          from: from || undefined,
+          to: to || undefined,
+          comment: comment || undefined,
+          totalFlightTime: Number(totalFlightTime),
+          pic: pic ? Number(pic) : undefined,
+          sic: sic ? Number(sic) : undefined,
+          dual: dual ? Number(dual) : undefined,
+          cfi: cfi ? Number(cfi) : undefined,
+          crossCountry: crossCountry ? Number(crossCountry) : undefined,
+          nighttime: nighttime ? Number(nighttime) : undefined,
+          imc: imc ? Number(imc) : undefined,
+          simulatedIFR: simulatedIFR ? Number(simulatedIFR) : undefined,
+          groundSim: groundSim ? Number(groundSim) : undefined,
+          approaches: approaches ? Number(approaches) : undefined,
+          landings: landings ? Number(landings) : undefined,
+          fullStopLandings: fullStopLandings ? Number(fullStopLandings) : undefined,
+          nightLandings: nightLandings ? Number(nightLandings) : undefined,
+        },
       });
-      navigate('/logbook');
     } catch {
-      // error is shown via createFlightMutation.error
+      // error is shown via updateFlightMutation.error
     }
   }
 
   const submitDisabled =
-    createFlightMutation.isPending ||
+    updateFlightMutation.isPending ||
     !date ||
     !selectedAircraftId ||
-    selectedAircraftId === NEW_AIRCRAFT_SENTINEL ||
     !totalFlightTime;
+
+  if (isLoading) return <LoadingSpinner />;
+  if (isError) return <ErrorMessage message="Failed to load flight." />;
 
   return (
     <div className={styles.page}>
-      <h2 className={styles.pageTitle}>Log a Flight</h2>
+      <h2 className={styles.pageTitle}>Edit Flight</h2>
 
       <form onSubmit={handleSubmit} noValidate>
 
-        {/* ── Section 1: Aircraft picker ───────────────────────────────────── */}
+        {/* ── Section 1: Aircraft picker ─────────────────────────────────── */}
         <section className={styles.card}>
           <h3 className={styles.cardTitle}>Aircraft</h3>
 
-          {aircraftLoading ? (
-            <div className={styles.aircraftLoading}>Loading aircraft…</div>
-          ) : (
-            <div className={styles.aircraftGrid}>
-              {aircraftList?.map((ac) => (
-                <div key={ac.aircraftId} className={styles.aircraftCardWrapper}>
-                  <button
-                    type="button"
-                    className={`${styles.aircraftCard} ${selectedAircraftId === String(ac.aircraftId) ? styles.aircraftCardSelected : ''}`}
-                    onClick={() => { setSelectedAircraftId(String(ac.aircraftId)); setEditingAircraftId(null); }}
-                  >
-                    <span className={styles.aircraftTail}>{ac.tailNumber}</span>
-                    <span className={styles.aircraftModel}>{ac.model || ac.manufacturer}</span>
-                    <span className={styles.aircraftCategory}>{ac.categoryClass}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={styles.aircraftEditBtn}
-                    onClick={() => setEditingAircraftId(editingAircraftId === ac.aircraftId ? null : ac.aircraftId)}
-                    aria-label={`Edit ${ac.tailNumber}`}
-                  >
-                    <PencilIcon />
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                className={`${styles.aircraftCard} ${styles.aircraftCardAdd} ${selectedAircraftId === NEW_AIRCRAFT_SENTINEL ? styles.aircraftCardSelected : ''}`}
-                onClick={() => setSelectedAircraftId(NEW_AIRCRAFT_SENTINEL)}
-              >
-                <span className={styles.aircraftAddIcon}>+</span>
-                <span className={styles.aircraftAddLabel}>New Aircraft</span>
-              </button>
-            </div>
-          )}
+          <div className={styles.aircraftGrid}>
+            {aircraftList?.map((ac) => (
+              <div key={ac.aircraftId} className={styles.aircraftCardWrapper}>
+                <button
+                  type="button"
+                  className={`${styles.aircraftCard} ${selectedAircraftId === String(ac.aircraftId) ? styles.aircraftCardSelected : ''}`}
+                  onClick={() => { setSelectedAircraftId(String(ac.aircraftId)); setEditingAircraftId(null); }}
+                >
+                  <span className={styles.aircraftTail}>{ac.tailNumber}</span>
+                  <span className={styles.aircraftModel}>{ac.model || ac.manufacturer}</span>
+                  <span className={styles.aircraftCategory}>{ac.categoryClass}</span>
+                </button>
+                <button
+                  type="button"
+                  className={styles.aircraftEditBtn}
+                  onClick={() => setEditingAircraftId(editingAircraftId === ac.aircraftId ? null : ac.aircraftId)}
+                  aria-label={`Edit ${ac.tailNumber}`}
+                >
+                  <PencilIcon />
+                </button>
+              </div>
+            ))}
+          </div>
 
-          {/* Inline edit aircraft sub-form */}
           {editingAircraftId !== null && (
             <div className={styles.subForm}>
               <h4 className={styles.subFormTitle}>
@@ -331,93 +296,9 @@ export default function NewFlightPage() {
               </div>
             </div>
           )}
-
-          {/* Inline new aircraft sub-form */}
-          {showNewAircraftForm && (
-            <div className={styles.subForm}>
-              <h4 className={styles.subFormTitle}>Add New Aircraft</h4>
-
-              {aircraftError && <ErrorMessage message={aircraftError} />}
-
-              <div className={styles.fieldRow}>
-                <div className={styles.field}>
-                  <label htmlFor="tailNumber">Tail Number *</label>
-                  <input
-                    id="tailNumber"
-                    type="text"
-                    placeholder="SE-ABC"
-                    value={tailNumber}
-                    onChange={(e) => setTailNumber(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.field}>
-                  <label htmlFor="manufacturer">Manufacturer *</label>
-                  <input
-                    id="manufacturer"
-                    type="text"
-                    placeholder="Cessna"
-                    value={manufacturerName}
-                    onChange={(e) => setManufacturerName(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.field}>
-                  <label htmlFor="model">Model *</label>
-                  <input
-                    id="model"
-                    type="text"
-                    placeholder="172"
-                    value={modelName}
-                    onChange={(e) => setModelName(e.target.value)}
-                  />
-                </div>
-
-                <div className={styles.field}>
-                  <label htmlFor="categoryClass">Category/Class *</label>
-                  <select
-                    id="categoryClass"
-                    value={categoryClassId}
-                    onChange={(e) => setCategoryClassId(e.target.value)}
-                  >
-                    <option value="">— Select —</option>
-                    {categoryClasses?.map((cc) => (
-                      <option key={cc.id} value={String(cc.id)}>
-                        {cc.catClass}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className={styles.field}>
-                  <label htmlFor="instanceType">Instance Type</label>
-                  <select
-                    id="instanceType"
-                    value={instanceType}
-                    onChange={(e) => setInstanceType(e.target.value)}
-                  >
-                    {INSTANCE_TYPES.map((t) => (
-                      <option key={t.value} value={t.value}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <button
-                type="button"
-                className={styles.addAircraftBtn}
-                onClick={handleAddAircraft}
-                disabled={createAircraftMutation.isPending}
-              >
-                {createAircraftMutation.isPending ? 'Adding…' : 'Add Aircraft'}
-              </button>
-            </div>
-          )}
         </section>
 
-        {/* ── Section 2: Airline-ticket route card ─────────────────────────── */}
+        {/* ── Section 2: Airline-ticket route card ──────────────────────── */}
         <section className={styles.ticket}>
           <div className={styles.ticketDate}>
             <label htmlFor="date" className={styles.ticketMetaLabel}>Date</label>
@@ -474,7 +355,7 @@ export default function NewFlightPage() {
           </div>
         </section>
 
-        {/* ── Section 3: Flight times ──────────────────────────────────────── */}
+        {/* ── Section 3: Flight times ────────────────────────────────────── */}
         <section className={styles.card}>
           <h3 className={styles.cardTitle}>Flight Times</h3>
 
@@ -498,7 +379,7 @@ export default function NewFlightPage() {
           </details>
         </section>
 
-        {/* ── Section 4: Landings ──────────────────────────────────────────── */}
+        {/* ── Section 4: Landings ────────────────────────────────────────── */}
         <section className={styles.card}>
           <h3 className={styles.cardTitle}>Landings</h3>
 
@@ -510,7 +391,7 @@ export default function NewFlightPage() {
           </div>
         </section>
 
-        {/* ── Notes ────────────────────────────────────────────────────────── */}
+        {/* ── Notes ──────────────────────────────────────────────────────── */}
         <div className={`${styles.field} ${styles.fieldFull}`}>
           <label htmlFor="comment">Notes</label>
           <textarea
@@ -522,11 +403,11 @@ export default function NewFlightPage() {
           />
         </div>
 
-        {createFlightMutation.isError && (
+        {updateFlightMutation.isError && (
           <ErrorMessage
             message={
-              createFlightMutation.error instanceof Error
-                ? createFlightMutation.error.message
+              updateFlightMutation.error instanceof Error
+                ? updateFlightMutation.error.message
                 : 'Failed to save flight.'
             }
           />
@@ -538,7 +419,7 @@ export default function NewFlightPage() {
               Cancel
             </button>
             <button type="submit" className={styles.submitBtn} disabled={submitDisabled}>
-              {createFlightMutation.isPending ? 'Saving…' : 'Save Flight'}
+              {updateFlightMutation.isPending ? 'Saving…' : 'Save Changes'}
             </button>
           </div>
         </div>

@@ -1,0 +1,83 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.12s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.dialog {
+  background: var(--surface);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r-xl);
+  padding: var(--sp-6);
+  width: min(360px, calc(100vw - 2rem));
+  box-shadow: var(--shadow-md), var(--shadow-inset);
+  animation: slideUp 0.14s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(8px); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+
+.message {
+  margin: 0 0 var(--sp-6);
+  font-size: var(--text-sm);
+  color: var(--text-1);
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}
+
+.cancelBtn {
+  padding: var(--sp-2) var(--sp-5);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-input);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              color var(--duration) var(--ease);
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--text-1);
+}
+
+.confirmBtn {
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--r);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--error);
+  cursor: pointer;
+  transition: background var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+
+.confirmBtn:hover {
+  background: rgba(248, 113, 113, 0.16);
+  border-color: rgba(248, 113, 113, 0.45);
+}
