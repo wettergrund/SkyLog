@@ -1,7 +1,7 @@
 .wrapper {
   position: relative;
   width: 100%;
-  max-width: 140px;
+  max-width: 14rem;
 }
 
 .dropdown {
@@ -17,7 +17,7 @@
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow-md);
-  z-index: 50;
+  z-index: 200;
   list-style: none;
   padding: var(--sp-1) 0;
   overflow: hidden;

@@ -72,6 +72,8 @@ export default function EditFlightPage() {
   useEffect(() => {
     if (!flight || populated) return;
     setDate(flight.date.slice(0, 10));
+    setBlockOff(flight.flightStart ? flight.flightStart.slice(11, 16) : '');
+    setBlockOn(flight.flightEnd   ? flight.flightEnd.slice(11, 16)   : '');
     setSelectedAircraftId(String(flight.aircraftId));
     setFrom(flight.from ?? '');
     setTo(flight.to ?? '');
