@@ -4,4 +4,6 @@ export interface AirportResult {
   name: string;
   municipality: string | null;
   isoCountry: string | null;
+  latitude: number | null;
+  longitude: number | null;
 }

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import type { AirportResult } from '../../types/airports';
 import { useQuery } from '@tanstack/react-query';
 import { useGetFlight } from '../../hooks/useGetFlight';
 import { useUpdateFlight } from '../../hooks/useUpdateFlight';
@@ -51,7 +52,21 @@ export default function EditFlightPage() {
   const [selectedAircraftId, setSelectedAircraftId] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
+  const [fromAirport, setFromAirport] = useState<AirportResult | null>(null);
+  const [toAirport, setToAirport] = useState<AirportResult | null>(null);
   const [totalFlightTime, setTotalFlightTime] = useState('');
+
+  const distanceNm = useMemo(() => {
+    if (!fromAirport?.latitude || !toAirport?.latitude) return null;
+    if (fromAirport.icao === toAirport.icao) return null;
+    const R = 3440.065;
+    const lat1 = fromAirport.latitude  * Math.PI / 180;
+    const lat2 = toAirport.latitude    * Math.PI / 180;
+    const dLat = lat2 - lat1;
+    const dLon = (toAirport.longitude! - fromAirport.longitude!) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+    return Math.round(R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+  }, [fromAirport, toAirport]);
   const [pic, setPic] = useState('');
   const [sic, setSic] = useState('');
   const [dual, setDual] = useState('');
@@ -317,12 +332,13 @@ export default function EditFlightPage() {
           <div className={styles.ticketBody}>
             {/* Departure */}
             <div className={styles.ticketAirport}>
+              <span className={styles.ticketAirportLabel}>Departure</span>
               <AirportInput
                 className={styles.ticketIcao}
                 value={from}
                 onChange={setFrom}
+                onSelect={setFromAirport}
               />
-              <span className={styles.ticketAirportLabel}>Departure</span>
               <div className={styles.ticketBlockTime}>
                 <BlockTimeField id="blockOff" label="Block off" value={blockOff} onChange={setBlockOff} />
               </div>
@@ -340,16 +356,20 @@ export default function EditFlightPage() {
               {totalFlightTime && (
                 <span className={styles.ticketDuration}>{totalFlightTime} h</span>
               )}
+              {distanceNm !== null && (
+                <span className={styles.ticketDistance}>{distanceNm} NM</span>
+              )}
             </div>
 
             {/* Arrival */}
             <div className={styles.ticketAirport}>
+              <span className={styles.ticketAirportLabel}>Arrival</span>
               <AirportInput
                 className={styles.ticketIcao}
                 value={to}
                 onChange={setTo}
+                onSelect={setToAirport}
               />
-              <span className={styles.ticketAirportLabel}>Arrival</span>
               <div className={styles.ticketBlockTime}>
                 <BlockTimeField id="blockOn" label="Block on" value={blockOn} onChange={setBlockOn} />
               </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { searchAirports } from '../../api/airports';
 import type { AirportResult } from '../../types/airports';
 import styles from './AirportInput.module.css';
@@ -6,6 +6,7 @@ import styles from './AirportInput.module.css';
 interface AirportInputProps {
   value: string;
   onChange: (icao: string) => void;
+  onSelect?: (airport: AirportResult | null) => void;
   className?: string;
   placeholder?: string;
 }
@@ -13,6 +14,7 @@ interface AirportInputProps {
 export default function AirportInput({
   value,
   onChange,
+  onSelect,
   className,
   placeholder = 'ICAO',
 }: AirportInputProps) {
@@ -29,16 +31,21 @@ export default function AirportInput({
       setSelectedAirport(null);
       setResults([]);
       setOpen(false);
+      onSelect?.(null);
     }
-  }, [value]);
+  }, [value]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const runSearch = useCallback((q: string) => {
+  function runSearch(q: string) {
     if (q.length < 2) {
       setResults([]);
       setOpen(false);
       return;
     }
     searchAirports(q).then((data) => {
+      if (data.length === 1) {
+        selectResult(data[0]);
+        return;
+      }
       setResults(data);
       setOpen(data.length > 0);
       setActiveIndex(-1);
@@ -46,7 +53,7 @@ export default function AirportInput({
       setResults([]);
       setOpen(false);
     });
-  }, []);
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const upper = e.target.value.toUpperCase();
@@ -60,9 +67,16 @@ export default function AirportInput({
   function selectResult(result: AirportResult) {
     onChange(result.icao);
     setSelectedAirport(result);
+    onSelect?.(result);
     setResults([]);
     setOpen(false);
     setActiveIndex(-1);
+  }
+
+  function handleBlur() {
+    if (!selectedAirport && value.length >= 4 && results.length > 0) {
+      selectResult(results[0]);
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -104,6 +118,7 @@ export default function AirportInput({
         maxLength={7}
         value={value}
         onChange={handleChange}
+        onBlur={handleBlur}
         onKeyDown={handleKeyDown}
         autoComplete="off"
         autoCorrect="off"

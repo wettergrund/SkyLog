@@ -32,7 +32,9 @@ public class AirportsController : ApiControllerBase
                 a.IATA,
                 a.Name,
                 a.Municipality,
-                a.IsoCountry))
+                a.IsoCountry,
+                a.Location != null ? (double?)a.Location.Y : null,
+                a.Location != null ? (double?)a.Location.X : null))
             .ToListAsync();
 
         var ordered = airports
@@ -50,4 +52,6 @@ public record AirportSearchResult(
     string? Iata,
     string Name,
     string? Municipality,
-    string? IsoCountry);
+    string? IsoCountry,
+    double? Latitude,
+    double? Longitude);
