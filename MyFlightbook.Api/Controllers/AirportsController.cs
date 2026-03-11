@@ -2,6 +2,7 @@ namespace MyFlightbook.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/airports")]
+[Authorize]
 public class AirportsController : ApiControllerBase
 {
     private readonly AppDbContext _db;

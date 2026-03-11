@@ -5,6 +5,7 @@
 
 # MyFlightbook.Api — secrets that must never be committed
 MyFlightbook.Api/firebase-service-account.json
+MyFlightbook.Api/serviceAccountKey.json
 MyFlightbook.Api/appsettings.Development.json
 
 # React client — Firebase config values

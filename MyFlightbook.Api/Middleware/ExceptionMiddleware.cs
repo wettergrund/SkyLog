@@ -37,12 +37,15 @@ public class ExceptionMiddleware
                 _                           => StatusCodes.Status500InternalServerError
             };
 
-            // Only expose the full message in development to avoid leaking internals.
             string message = _env.IsDevelopment()
                 ? ex.Message
-                : context.Response.StatusCode == 500
-                    ? "An unexpected error occurred."
-                    : ex.Message;
+                : context.Response.StatusCode switch
+                {
+                    400 => "Bad request.",
+                    403 => "Access denied.",
+                    404 => "Resource not found.",
+                    _   => "An unexpected error occurred."
+                };
 
             await context.Response.WriteAsJsonAsync(new { ok = false, error = message });
         }
