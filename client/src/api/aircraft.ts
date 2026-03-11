@@ -22,3 +22,16 @@ export function updateAircraft(id: number, request: UpdateAircraftRequest): Prom
     body: JSON.stringify(request),
   });
 }
+
+export function refreshAircraftImage(id: number): Promise<AircraftSummary> {
+  return apiFetch<AircraftSummary>(`/api/v1/aircraft/${id}/refresh-image`, {
+    method: 'POST',
+  });
+}
+
+export function hideAircraft(id: number, hide: boolean): Promise<AircraftSummary> {
+  return apiFetch<AircraftSummary>(`/api/v1/aircraft/${id}/hide`, {
+    method: 'PATCH',
+    body: JSON.stringify({ hide }),
+  });
+}

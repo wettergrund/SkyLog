@@ -9,6 +9,8 @@ export interface AircraftSummary {
   typeName: string | null;
   manufacturer: string;
   categoryClass: string;
+  defaultImage?: string | null;
+  hideFromSelection?: boolean;
 }
 
 export interface UpdateAircraftRequest {

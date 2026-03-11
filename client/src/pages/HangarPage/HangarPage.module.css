@@ -1,0 +1,151 @@
+.page {
+  max-width: 860px;
+}
+
+.header {
+  margin-bottom: var(--sp-8);
+}
+
+.pageTitle {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--sp-1) 0;
+}
+
+.subtitle {
+  font-size: var(--text-sm);
+  color: var(--text-3);
+  margin: 0;
+}
+
+.loading,
+.empty {
+  color: var(--text-3);
+  font-size: var(--text-sm);
+}
+
+/* ── Aircraft grid ────────────────────────────────────────────────────────── */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--sp-4);
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────────── */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4) var(--sp-3);
+  background: var(--surface);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  transition: opacity var(--duration) var(--ease);
+}
+
+.cardHidden {
+  opacity: 0.5;
+}
+
+/* ── Hidden badge ─────────────────────────────────────────────────────────── */
+
+.hiddenBadge {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 2px var(--sp-2);
+}
+
+/* ── Card image ───────────────────────────────────────────────────────────── */
+
+.cardImage {
+  width: 100%;
+  border-radius: var(--r);
+  max-height: 80px;
+  object-fit: cover;
+}
+
+.cardNoImage {
+  width: 100%;
+  height: 80px;
+  background: var(--surface-2);
+  border-radius: var(--r);
+}
+
+/* ── Card text ────────────────────────────────────────────────────────────── */
+
+.tailNumber {
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: var(--text-1);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+.model {
+  font-size: var(--text-xs);
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.categoryClass {
+  font-size: var(--text-xs);
+  color: var(--text-3);
+}
+
+/* ── Hide toggle button ───────────────────────────────────────────────────── */
+
+.toggleBtn {
+  margin-top: auto;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--duration) var(--ease),
+              color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease);
+}
+
+.toggleBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.toggleBtnActive {
+  background: transparent;
+  color: var(--brand);
+  border: 1px solid var(--brand);
+}
+
+.toggleBtnActive:hover:not(:disabled) {
+  background: var(--brand-light);
+}
+
+.toggleBtnHidden {
+  background: transparent;
+  color: var(--text-3);
+  border: 1px solid var(--border);
+}
+
+.toggleBtnHidden:hover:not(:disabled) {
+  color: var(--text-1);
+  border-color: var(--text-2);
+}

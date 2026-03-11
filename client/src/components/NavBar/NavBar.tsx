@@ -29,6 +29,14 @@ export default function NavBar() {
         Currency
       </NavLink>
       <NavLink
+        to="/hangar"
+        className={({ isActive }) =>
+          `${styles.link}${isActive ? ` ${styles.active}` : ''}`
+        }
+      >
+        Hangar
+      </NavLink>
+      <NavLink
         to="/flights/new"
         className={({ isActive }) =>
           `${styles.link}${isActive ? ` ${styles.active}` : ''}`

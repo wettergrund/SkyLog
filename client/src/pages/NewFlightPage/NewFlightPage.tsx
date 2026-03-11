@@ -6,6 +6,7 @@ import { useAircraft } from '../../hooks/useAircraft';
 import { useCreateAircraft } from '../../hooks/useCreateAircraft';
 import { useUpdateAircraft } from '../../hooks/useUpdateAircraft';
 import { useCreateFlight } from '../../hooks/useCreateFlight';
+import { useRefreshAircraftImage } from '../../hooks/useRefreshAircraftImage';
 
 import { getCategoryClasses } from '../../api/aircraft';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -20,6 +21,17 @@ function PencilIcon() {
       strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
       <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  );
+}
+
+function RefreshIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="1 4 1 10 7 10" />
+      <polyline points="23 20 23 14 17 14" />
+      <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" />
     </svg>
   );
 }
@@ -51,6 +63,7 @@ export default function NewFlightPage() {
   const createAircraftMutation = useCreateAircraft();
   const updateAircraftMutation = useUpdateAircraft();
   const createFlightMutation = useCreateFlight();
+  const refreshImageMutation = useRefreshAircraftImage();
 
   // ── Flight form state ─────────────────────────────────────────────────────
   const [date, setDate] = useState(todayIso());
@@ -242,13 +255,17 @@ export default function NewFlightPage() {
             <div className={styles.aircraftLoading}>Loading aircraft…</div>
           ) : (
             <div className={styles.aircraftGrid}>
-              {aircraftList?.map((ac) => (
+              {aircraftList?.filter(ac => !ac.hideFromSelection).map((ac) => (
                 <div key={ac.aircraftId} className={styles.aircraftCardWrapper}>
                   <button
                     type="button"
                     className={`${styles.aircraftCard} ${selectedAircraftId === String(ac.aircraftId) ? styles.aircraftCardSelected : ''}`}
                     onClick={() => { setSelectedAircraftId(String(ac.aircraftId)); setEditingAircraftId(null); }}
                   >
+                    {ac.defaultImage
+                      ? <img src={ac.defaultImage} alt={ac.tailNumber} className={styles.aircraftCardImage} />
+                      : <div className={styles.aircraftCardNoImage} />
+                    }
                     <span className={styles.aircraftTail}>{ac.tailNumber}</span>
                     <span className={styles.aircraftModel}>{ac.model || ac.manufacturer}</span>
                     <span className={styles.aircraftCategory}>{ac.categoryClass}</span>
@@ -260,6 +277,15 @@ export default function NewFlightPage() {
                     aria-label={`Edit ${ac.tailNumber}`}
                   >
                     <PencilIcon />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.aircraftRefreshBtn}
+                    onClick={() => refreshImageMutation.mutate(ac.aircraftId)}
+                    disabled={refreshImageMutation.isPending}
+                    aria-label={`Refresh photo for ${ac.tailNumber}`}
+                  >
+                    <RefreshIcon />
                   </button>
                 </div>
               ))}

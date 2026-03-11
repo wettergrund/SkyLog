@@ -69,6 +69,7 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddSingleton( FirebaseAuth.DefaultInstance );
 builder.Services.AddScoped<IUserResolver, FirebaseUserResolver>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();
 
 // ── Controllers & JSON ────────────────────────────────────────────────────────
 builder.Services.AddControllers()

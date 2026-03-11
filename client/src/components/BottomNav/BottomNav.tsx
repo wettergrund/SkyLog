@@ -59,6 +59,19 @@ export default function BottomNav() {
         <span className={styles.label}>Currency</span>
       </NavLink>
 
+      <NavLink
+        to="/hangar"
+        className={({ isActive }) =>
+          `${styles.item}${isActive ? ` ${styles.active}` : ''}`
+        }
+      >
+        <svg className={styles.icon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="11" width="18" height="10" rx="1" />
+          <path d="M2 11 Q12 3 22 11" />
+        </svg>
+        <span className={styles.label}>Hangar</span>
+      </NavLink>
+
     </nav>
   );
 }

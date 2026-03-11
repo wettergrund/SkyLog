@@ -9,6 +9,7 @@ import CurrencyPage from './pages/CurrencyPage/CurrencyPage';
 import NewFlightPage from './pages/NewFlightPage/NewFlightPage';
 import EditFlightPage from './pages/EditFlightPage/EditFlightPage';
 import ImportExportPage from './pages/ImportExportPage/ImportExportPage';
+import HangarPage from './pages/HangarPage/HangarPage';
 
 export const router = createBrowserRouter([
   {
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([
           { path: '/flights/new', element: <NewFlightPage /> },
           { path: '/flights/:id/edit', element: <EditFlightPage /> },
           { path: '/import-export', element: <ImportExportPage /> },
+          { path: '/hangar', element: <HangarPage /> },
           { path: '/', element: <Navigate to="/logbook" replace /> },
         ],
       },

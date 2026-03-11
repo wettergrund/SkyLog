@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using MyFlightbook.Data;
 
 namespace MyFlightbook.Api.Controllers;
@@ -5,12 +6,13 @@ namespace MyFlightbook.Api.Controllers;
 /// <summary>
 /// Aircraft REST endpoints.
 ///
-/// GET    /api/v1/aircraft             — list all aircraft in the user's hangar
-/// GET    /api/v1/aircraft/{id}        — single aircraft with maintenance data
-/// GET    /api/v1/aircraft/categories  — list all category/class options
-/// POST   /api/v1/aircraft             — add an aircraft to the user's hangar
-/// DELETE /api/v1/aircraft/{id}        — remove aircraft from the user's hangar
-///                                       (does NOT delete the shared Aircraft record)
+/// GET    /api/v1/aircraft                    — list all aircraft in the user's hangar
+/// GET    /api/v1/aircraft/{id}               — single aircraft with maintenance data
+/// GET    /api/v1/aircraft/categories         — list all category/class options
+/// POST   /api/v1/aircraft                    — add an aircraft to the user's hangar
+/// POST   /api/v1/aircraft/{id}/refresh-image — refresh the photo from jetapi.dev
+/// DELETE /api/v1/aircraft/{id}               — remove aircraft from the user's hangar
+///                                              (does NOT delete the shared Aircraft record)
 /// </summary>
 [ApiController]
 [Route("api/v1/aircraft")]
@@ -18,9 +20,35 @@ namespace MyFlightbook.Api.Controllers;
 public class AircraftController : ApiControllerBase
 {
     private readonly AppDbContext _db;
+    private readonly IHttpClientFactory _httpClientFactory;
 
-    public AircraftController(AppDbContext db, IUserResolver resolver) : base(resolver)
-        => _db = db;
+    public AircraftController(AppDbContext db, IUserResolver resolver, IHttpClientFactory httpClientFactory) : base(resolver)
+    {
+        _db = db;
+        _httpClientFactory = httpClientFactory;
+    }
+
+    private record JetApiResponse([property: JsonPropertyName("Images")] JetApiImage[]? Images);
+    private record JetApiImage([property: JsonPropertyName("Thumbnail")] string? Thumbnail);
+
+    private async Task FetchAndStoreImageAsync(Aircraft aircraft)
+    {
+        try
+        {
+            var client = _httpClientFactory.CreateClient();
+            var url = $"https://www.jetapi.dev/api?reg={Uri.EscapeDataString(aircraft.TailNumber)}&photos=1&only_jp=true";
+            var response = await client.GetAsync(url);
+            if (!response.IsSuccessStatusCode) return;
+            var json = await response.Content.ReadAsStringAsync();
+            var result = System.Text.Json.JsonSerializer.Deserialize<JetApiResponse>(json);
+            if (result?.Images is { Length: > 0 } images && !string.IsNullOrEmpty(images[0].Thumbnail))
+                aircraft.DefaultImage = images[0].Thumbnail;
+        }
+        catch
+        {
+            // Image fetch is best-effort — never break aircraft creation or refresh
+        }
+    }
 
     // ── GET /api/v1/aircraft ──────────────────────────────────────────────────
 
@@ -119,6 +147,10 @@ public class AircraftController : ApiControllerBase
             await _db.SaveChangesAsync();
         }
 
+        // Fetch photo from jetapi.dev (best-effort, failures are silently ignored)
+        await FetchAndStoreImageAsync(aircraft);
+        await _db.SaveChangesAsync();
+
         // Upsert UserAircraft
         var ua = await _db.UserAircraft
             .FirstOrDefaultAsync(x => x.AppUserId == user.Id && x.AircraftId == aircraft.Id);
@@ -207,6 +239,60 @@ public class AircraftController : ApiControllerBase
         return ApiOk();
     }
 
+    // ── PATCH /api/v1/aircraft/{id}/hide ──────────────────────────────────────
+
+    [HttpPatch("{id:int}/hide")]
+    public async Task<IActionResult> HideAircraft(int id, [FromBody] HideRequest request)
+    {
+        var user = await CurrentUserAsync();
+
+        var ua = await _db.UserAircraft
+            .FirstOrDefaultAsync(x => x.AppUserId == user.Id && x.AircraftId == id);
+
+        if (ua is null)
+            return ApiError("Aircraft not found in your hangar.", HttpStatusCode.NotFound);
+
+        ua.HideFromSelection = request.Hide;
+        await _db.SaveChangesAsync();
+
+        // Reload with navigation properties for the DTO
+        ua = await _db.UserAircraft
+            .Where(x => x.AppUserId == user.Id && x.AircraftId == id)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.Manufacturer)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.CategoryClass)
+            .FirstAsync();
+
+        return ApiOk(ToDto(ua));
+    }
+
+    // ── POST /api/v1/aircraft/{id}/refresh-image ──────────────────────────────
+
+    [HttpPost("{id:int}/refresh-image")]
+    public async Task<IActionResult> RefreshImage(int id)
+    {
+        var user = await CurrentUserAsync();
+
+        var ua = await _db.UserAircraft
+            .Where(x => x.AppUserId == user.Id && x.AircraftId == id)
+            .Include(x => x.Aircraft)
+            .FirstOrDefaultAsync();
+
+        if (ua is null)
+            return ApiError("Aircraft not found in your hangar.", HttpStatusCode.NotFound);
+
+        await FetchAndStoreImageAsync(ua.Aircraft);
+        await _db.SaveChangesAsync();
+
+        // Reload with navigation properties for the DTO
+        ua = await _db.UserAircraft
+            .Where(x => x.AppUserId == user.Id && x.AircraftId == id)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.Manufacturer)
+            .Include(x => x.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.CategoryClass)
+            .FirstAsync();
+
+        return ApiOk(ToDto(ua));
+    }
+
     // ── DTO projection ────────────────────────────────────────────────────────
 
     private static object ToDto(UserAircraft ua)
@@ -256,6 +342,8 @@ public class AircraftController : ApiControllerBase
         };
     }
 }
+
+public record HideRequest(bool Hide);
 
 public record UpdateAircraftRequest(
     string ManufacturerName,
