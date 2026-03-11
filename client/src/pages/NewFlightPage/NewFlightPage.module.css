@@ -554,6 +554,37 @@
   line-height: 1.5;
 }
 
+/* ── Copy-from-total button ───────────────────────────────────────────────── */
+
+.fieldLabelRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+
+.copyBtn {
+  padding: 1px 5px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  font-size: 0.6rem;
+  color: var(--text-3);
+  cursor: pointer;
+  font-family: 'JetBrains Mono', 'Cascadia Code', monospace;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+  white-space: nowrap;
+  transition: color var(--duration) var(--ease),
+              border-color var(--duration) var(--ease),
+              background var(--duration) var(--ease);
+}
+
+.copyBtn:hover {
+  color: var(--brand);
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+
 /* ── Primary time fields (Total + PIC) ───────────────────────────────────── */
 
 .timePrimary {

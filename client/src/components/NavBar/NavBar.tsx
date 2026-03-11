@@ -39,7 +39,7 @@ export default function NavBar() {
       <NavLink
         to="/flights/new"
         className={({ isActive }) =>
-          `${styles.link}${isActive ? ` ${styles.active}` : ''}`
+          `${styles.link} ${styles.ctaLink}${isActive ? ` ${styles.active}` : ''}`
         }
       >
         Log Flight

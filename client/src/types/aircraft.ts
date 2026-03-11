@@ -11,6 +11,7 @@ export interface AircraftSummary {
   categoryClass: string;
   defaultImage?: string | null;
   hideFromSelection?: boolean;
+  totalHours?: number;
 }
 
 export interface UpdateAircraftRequest {

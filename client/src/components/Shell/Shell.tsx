@@ -8,7 +8,7 @@ export default function Shell() {
   return (
     <div className={styles.shell}>
       <header className={styles.header}>
-        <Link to="/logbook" className={styles.brand}>MyFlightbook</Link>
+        <Link to="/logbook" className={styles.brand}>SkyLog</Link>
         <div className={styles.nav}>
           <NavBar />
         </div>

@@ -1,6 +1,7 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import Shell from './components/Shell/Shell';
 import ProtectedRoute from './components/ProtectedRoute';
+import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import LogbookPage from './pages/LogbookPage/LogbookPage';
@@ -12,6 +13,10 @@ import ImportExportPage from './pages/ImportExportPage/ImportExportPage';
 import HangarPage from './pages/HangarPage/HangarPage';
 
 export const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <LandingPage />,
+  },
   {
     path: '/login',
     element: <LoginPage />,
@@ -33,7 +38,6 @@ export const router = createBrowserRouter([
           { path: '/flights/:id/edit', element: <EditFlightPage /> },
           { path: '/import-export', element: <ImportExportPage /> },
           { path: '/hangar', element: <HangarPage /> },
-          { path: '/', element: <Navigate to="/logbook" replace /> },
         ],
       },
     ],

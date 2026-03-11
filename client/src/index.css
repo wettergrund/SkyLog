@@ -12,9 +12,9 @@
   --bg:            #080e1f;
   --bg-gradient:   radial-gradient(ellipse at 15% 10%, rgba(56, 189, 248, 0.07) 0%, transparent 55%),
                    radial-gradient(ellipse at 85% 85%, rgba(99, 102, 241, 0.06) 0%, transparent 55%);
-  --surface:       rgba(255, 255, 255, 0.07);
+  --surface:       #152142cb;
   --surface-2:     rgba(255, 255, 255, 0.04);
-  --surface-hover: rgba(255, 255, 255, 0.11);
+  --surface-hover: rgba(37, 37, 37, 0.11);
   --surface-active:rgba(56, 189, 248, 0.14);
 
   /* Text */
@@ -106,7 +106,7 @@
   --bg:            #eef2ff;
   --bg-gradient:   radial-gradient(ellipse at 15% 10%, rgba(14, 165, 233, 0.08) 0%, transparent 55%),
                    radial-gradient(ellipse at 85% 85%, rgba(99, 102, 241, 0.06) 0%, transparent 55%);
-  --surface:       rgba(255, 255, 255, 0.65);
+  --surface:       rgb(255, 255, 255);
   --surface-2:     rgba(255, 255, 255, 0.40);
   --surface-hover: rgba(255, 255, 255, 0.85);
   --surface-active:rgba(14, 165, 233, 0.08);
@@ -166,7 +166,7 @@
     --bg:            #eef2ff;
     --bg-gradient:   radial-gradient(ellipse at 15% 10%, rgba(14, 165, 233, 0.08) 0%, transparent 55%),
                      radial-gradient(ellipse at 85% 85%, rgba(99, 102, 241, 0.06) 0%, transparent 55%);
-    --surface:       rgba(255, 255, 255, 0.65);
+    --surface:       rgba(246, 252, 255, 0.932);
     --surface-2:     rgba(255, 255, 255, 0.40);
     --surface-hover: rgba(255, 255, 255, 0.85);
     --surface-active:rgba(14, 165, 233, 0.08);

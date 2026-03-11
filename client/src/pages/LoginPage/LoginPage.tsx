@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { FirebaseError } from 'firebase/app';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 import { login, loginWithGoogle } from '../../api/auth';
 import { useAuth } from '../../context/AuthContext';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
@@ -35,6 +37,18 @@ export default function LoginPage() {
   const [password, setPassword]   = useState('');
   const [error, setError]         = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  async function handleForgotPassword() {
+    if (!email) { setError('Enter your email address above first.'); return; }
+    setError(null);
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetSent(true);
+    } catch (err) {
+      setError(err instanceof FirebaseError ? firebaseErrorMessage(err) : 'Could not send reset email.');
+    }
+  }
 
   if (!isLoading && user) return <Navigate to="/logbook" replace />;
 
@@ -95,6 +109,11 @@ export default function LoginPage() {
             />
           </div>
 
+          <button type="button" className={styles.forgotLink} onClick={handleForgotPassword} disabled={submitting}>
+            Forgot password?
+          </button>
+
+          {resetSent && <p className={styles.resetConfirm}>Reset email sent — check your inbox.</p>}
           {error && <ErrorMessage message={error} />}
 
           <button type="submit" className={styles.submit} disabled={submitting || isLoading}>

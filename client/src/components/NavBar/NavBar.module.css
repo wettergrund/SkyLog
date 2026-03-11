@@ -33,6 +33,23 @@
   background: var(--nav-link-active-bg);
 }
 
+.ctaLink {
+  background: var(--brand);
+  color: var(--brand-text) !important;
+  border-radius: var(--r);
+  font-weight: 600;
+}
+
+.ctaLink:hover {
+  background: var(--brand-hover) !important;
+  color: var(--brand-text) !important;
+}
+
+.ctaLink.active {
+  background: var(--brand-hover) !important;
+  color: var(--brand-text) !important;
+}
+
 .logoutBtn {
   margin-left: auto;
   flex-shrink: 0;

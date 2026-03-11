@@ -25,6 +25,8 @@
 
 .gridWrapper {
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: calc(100vh - 240px);
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
@@ -59,6 +61,7 @@
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
+  z-index: 10;
 }
 
 .headerCell {
@@ -89,6 +92,7 @@
 .dataRow {
   border-bottom: 1px solid var(--border);
   transition: background var(--duration) var(--ease);
+  cursor: pointer;
 }
 
 .dataRow:last-child {

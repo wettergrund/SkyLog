@@ -63,7 +63,14 @@ public class AircraftController : ApiControllerBase
             .Include(ua => ua.Aircraft).ThenInclude(a => a.MakeModel).ThenInclude(mm => mm.CategoryClass)
             .ToListAsync();
 
-        return ApiOk(rows.Select(ToDto));
+        var aircraftIds = rows.Select(ua => ua.AircraftId).ToList();
+        var hoursByAircraft = await _db.Flights
+            .Where(f => f.AppUserId == user.Id && aircraftIds.Contains(f.AircraftId))
+            .GroupBy(f => f.AircraftId)
+            .Select(g => new { AircraftId = g.Key, Total = g.Sum(f => f.TotalFlightTime) })
+            .ToDictionaryAsync(x => x.AircraftId, x => x.Total);
+
+        return ApiOk(rows.Select(ua => ToDto(ua, hoursByAircraft.GetValueOrDefault(ua.AircraftId))));
     }
 
     // ── GET /api/v1/aircraft/{id} ─────────────────────────────────────────────
@@ -295,7 +302,7 @@ public class AircraftController : ApiControllerBase
 
     // ── DTO projection ────────────────────────────────────────────────────────
 
-    private static object ToDto(UserAircraft ua)
+    private static object ToDto(UserAircraft ua, decimal totalHours = 0)
     {
         var ac    = ua.Aircraft;
         var mm    = ac?.MakeModel;
@@ -321,6 +328,7 @@ public class AircraftController : ApiControllerBase
             // User-specific configuration
             roleForPilot       = ua.RoleForPilot.ToString(),
             hideFromSelection  = ua.HideFromSelection,
+            totalHours         = totalHours,
             privateNotes       = ua.PrivateNotes,
             isRegistered       = ua.IsRegistered,
             avionicsTechnology = ua.AvionicsTechnology.ToString(),

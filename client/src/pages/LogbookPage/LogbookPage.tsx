@@ -9,7 +9,6 @@ import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ErrorMessage from '../../components/ErrorMessage/ErrorMessage';
 import Pagination from '../../components/Pagination/Pagination';
 import ConfirmModal from '../../components/ConfirmModal/ConfirmModal';
-import QuickAddFlight from './QuickAddFlight';
 import styles from './LogbookPage.module.css';
 
 const PAGE_SIZE = 25;
@@ -138,14 +137,12 @@ export default function LogbookPage() {
                 <div className={styles.headerCell} />
               </div>
 
-              {sortDir === 'Descending' && <QuickAddFlight />}
-
               {/* Rows */}
               {data.flights.length === 0 ? (
                 <div className={styles.emptyRow}>No flights found.</div>
               ) : (
                 data.flights.map((f) => (
-                  <div key={f.id} className={styles.dataRow}>
+                  <div key={f.id} className={styles.dataRow} onClick={() => navigate(`/flights/${f.id}/edit`)}>
                     <div className={`${styles.cell} ${styles.cellDate}`}>{f.date.slice(0, 10)}</div>
                     <div className={`${styles.cell} ${styles.cellStart}`}>{fmtBlockTime(f.flightStart)}</div>
                     <div className={`${styles.cell} ${styles.cellEnd}`}>{fmtBlockTime(f.flightEnd)}</div>
@@ -174,7 +171,7 @@ export default function LogbookPage() {
                       <button
                         type="button"
                         className={styles.deleteBtn}
-                        onClick={() => setPendingDeleteId(f.id)}
+                        onClick={(e) => { e.stopPropagation(); setPendingDeleteId(f.id); }}
                         aria-label="Delete flight"
                       >
                         <TrashIcon />
@@ -184,7 +181,6 @@ export default function LogbookPage() {
                 ))
               )}
 
-              {sortDir === 'Ascending' && <QuickAddFlight />}
             </div>
           </div>
 

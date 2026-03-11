@@ -232,7 +232,7 @@ export default function EditFlightPage() {
           <h3 className={styles.cardTitle}>Aircraft</h3>
 
           <div className={styles.aircraftGrid}>
-            {aircraftList?.filter(ac => !ac.hideFromSelection).map((ac) => (
+            {aircraftList?.filter(ac => !ac.hideFromSelection || String(ac.aircraftId) === selectedAircraftId).map((ac) => (
               <div key={ac.aircraftId} className={styles.aircraftCardWrapper}>
                 <button
                   type="button"
@@ -409,20 +409,20 @@ export default function EditFlightPage() {
 
           <div className={styles.timePrimary}>
             <TimeField id="totalFlightTime" label="Total *" value={totalFlightTime} onChange={setTotalFlightTime} />
-            <TimeField id="pic"             label="PIC"     value={pic}             onChange={setPic} />
+            <TimeField id="pic"             label="PIC"     value={pic}             onChange={setPic}             onCopyFromTotal={() => setPic(totalFlightTime)}             copyFromValue={totalFlightTime} />
           </div>
 
           <details className={styles.timeDetails}>
             <summary className={styles.timeDetailsSummary}>More time fields</summary>
             <div className={styles.timeGrid}>
-              <TimeField id="sic"          label="SIC"           value={sic}          onChange={setSic} />
-              <TimeField id="dual"         label="Dual"          value={dual}         onChange={setDual} />
-              <TimeField id="cfi"          label="CFI"           value={cfi}          onChange={setCfi} />
-              <TimeField id="crossCountry" label="Cross Country" value={crossCountry} onChange={setCrossCountry} />
-              <TimeField id="nighttime"    label="Night"         value={nighttime}    onChange={setNighttime} />
-              <TimeField id="imc"          label="IMC"           value={imc}          onChange={setImc} />
-              <TimeField id="simulatedIFR" label="Sim IFR"       value={simulatedIFR} onChange={setSimulatedIFR} />
-              <TimeField id="groundSim"    label="Ground Sim"    value={groundSim}    onChange={setGroundSim} />
+              <TimeField id="sic"          label="SIC"           value={sic}          onChange={setSic}          onCopyFromTotal={() => setSic(totalFlightTime)}          copyFromValue={totalFlightTime} />
+              <TimeField id="dual"         label="Dual"          value={dual}         onChange={setDual}         onCopyFromTotal={() => setDual(totalFlightTime)}         copyFromValue={totalFlightTime} />
+              <TimeField id="cfi"          label="CFI"           value={cfi}          onChange={setCfi}          onCopyFromTotal={() => setCfi(totalFlightTime)}          copyFromValue={totalFlightTime} />
+              <TimeField id="crossCountry" label="Cross Country" value={crossCountry} onChange={setCrossCountry} onCopyFromTotal={() => setCrossCountry(totalFlightTime)} copyFromValue={totalFlightTime} />
+              <TimeField id="nighttime"    label="Night"         value={nighttime}    onChange={setNighttime}    onCopyFromTotal={() => setNighttime(totalFlightTime)}    copyFromValue={totalFlightTime} />
+              <TimeField id="imc"          label="IMC"           value={imc}          onChange={setImc}          onCopyFromTotal={() => setImc(totalFlightTime)}          copyFromValue={totalFlightTime} />
+              <TimeField id="simulatedIFR" label="Sim IFR"       value={simulatedIFR} onChange={setSimulatedIFR} onCopyFromTotal={() => setSimulatedIFR(totalFlightTime)} copyFromValue={totalFlightTime} />
+              <TimeField id="groundSim"    label="Ground Sim"    value={groundSim}    onChange={setGroundSim}    onCopyFromTotal={() => setGroundSim(totalFlightTime)}    copyFromValue={totalFlightTime} />
             </div>
           </details>
         </section>
@@ -484,12 +484,27 @@ interface FieldProps {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  onCopyFromTotal?: () => void;
+  copyFromValue?: string;
 }
 
-function TimeField({ id, label, value, onChange }: FieldProps) {
+function TimeField({ id, label, value, onChange, onCopyFromTotal, copyFromValue }: FieldProps) {
   return (
     <div className={styles.field}>
-      <label htmlFor={id}>{label}</label>
+      <div className={styles.fieldLabelRow}>
+        <label htmlFor={id}>{label}</label>
+        {onCopyFromTotal && copyFromValue && (
+          <button
+            type="button"
+            className={styles.copyBtn}
+            onClick={onCopyFromTotal}
+            tabIndex={-1}
+            title={`Set to total (${copyFromValue})`}
+          >
+            ={copyFromValue}
+          </button>
+        )}
+      </div>
       <input
         id={id}
         type="number"
